@@ -1,0 +1,5 @@
+#Python Generated Files
+*.pyc
+__pycache__/
+
+.env
