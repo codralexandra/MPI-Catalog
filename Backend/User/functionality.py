@@ -38,12 +38,17 @@ class User(Resource):
     
     def reset_password():
         username = request.form.get('login')
+        old_password = request.form.get('old_pwd')
         new_password = request.form.get('new_pwd')
-        if not username:
-            return 'Username Field Cannot Be Empty', 400
+        if not username or not old_password or not new_password:
+            return 'Username, Old Password, and New Password Fields Cannot Be Empty', 400
         
-        user = UserModel(username, new_password)
-        return_code = user.reset_password()
+        user = UserModel(username, old_password)
+        user_found = user.find()
+        if not user_found:
+            return 'User Not Found', 404
+        
+        return_code = user.reset_password(new_password= new_password)
 
         if return_code == 404:
             return 'User Not Found', 404
