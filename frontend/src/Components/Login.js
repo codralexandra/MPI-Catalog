@@ -1,4 +1,4 @@
-import '../Stylesheets/Login.css';
+import '../Stylesheets/LoginRegister.css';
 import { useRef, useState, useEffect } from "react";
 
 function Login() {

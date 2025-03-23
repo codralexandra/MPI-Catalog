@@ -1,0 +1,14 @@
+:root {
+    --page-background: #f5e7df;
+    --register-forms-background: #c47f6a;
+    --register-form-button: #621d15;
+    --register-form-button-hover: #82261d;
+    --register-form-button-click: #c33d15;
+    --form-text:#e5c9ba;
+    --button-text:#f3e3da;
+    --main-text: #4b2114;
+    --container-background: #e5beb2;
+    --container-button: #b9988d;
+    --container-button-selected: #b98676;
+    --additional-containter-button-clicked: #d3cac5;
+}
