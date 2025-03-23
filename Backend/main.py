@@ -1,3 +1,8 @@
+import sys
+import os
+# Add the sub-folders to the system path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'User'))
+
 from flask import Flask
 from User.functionality import User
 
@@ -15,6 +20,9 @@ def login():
     return User.login()
     
     
+@app.route('/register', methods=['POST'])
+def register():
+    return User.register()
 
 
 if __name__ == '__main__':
