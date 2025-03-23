@@ -19,4 +19,8 @@ class UserModel:
             'password': self.password,
             'role': self.role
         }
+    
+    def find(self):
+        return self.collection.find_one({'username': self.username, 'password': self.password})
+        
 
