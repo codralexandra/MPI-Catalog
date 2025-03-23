@@ -15,7 +15,7 @@ app = Flask(name)
 def index():
     return 'Welcome to the Gradebook!'
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def login():
     return User.login()
     

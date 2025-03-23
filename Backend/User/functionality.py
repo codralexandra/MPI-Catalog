@@ -4,15 +4,16 @@ from flask import request
 
 class User(Resource):
     def login():
-        data = request.get_json()
-        username = data['login']
-        password = data['pwd']
-        return 200
+        username = request.form['login']
+        password = request.form['pwd']
+
+        return {'role': 'student', 'id': '67dfe103090f6ad84aea4020'}, 200
     
     def register():
         username = request.form['login']
         password = request.form['pwd']
         role = request.form['role']
+        role = role.lower()
 
         if not username or not password or not role:
             return 'Username, Password, and Role Fields Cannot Be Empty', 400
