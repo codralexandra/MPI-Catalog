@@ -41,6 +41,16 @@ def login():
 def register():
     return User.register()
 
+"""
+/reset_password:
+    - Method: POST
+    - Description: Handles password reset.
+    - Request Body: Expects 'login' and 'new_pwd' parameters.
+    - Response: Returns a success message if reset is successful, or an error message if the user is not found.
+"""
+@app.route('/reset_password', methods=['POST'])
+def reset_password():
+    return User.reset_password()
 
 if __name__ == '__main__':
     app.run(debug=True, port='5000', host='0.0.0.0')

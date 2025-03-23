@@ -17,6 +17,7 @@ class User(Resource):
         
         return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
 
+
     def register():
         username = request.form.get('username')
         password = request.form.get('pwd')
@@ -32,7 +33,19 @@ class User(Resource):
         user = UserModel(username, password,role)
         user.save()
 
-
         return 'Register Completed', 200
+    
+    
+    def reset_password():
+        username = request.form.get('login')
+        new_password = request.form.get('new_pwd')
+        if not username:
+            return 'Username Field Cannot Be Empty', 400
+        
+        user = UserModel(username, new_password)
+        return_code = user.reset_password()
 
+        if return_code == 404:
+            return 'User Not Found', 404
+        return 'Password Reset Completed', 200
 

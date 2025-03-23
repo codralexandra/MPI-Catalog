@@ -27,3 +27,10 @@ class UserModel:
                 return user
         return user
 
+    def reset_password(self):
+        user = self.collection.find_one({'username': self.username})
+        if user:
+            user['password'] = self.password
+            self.collection.update_one({'username': self.username}, {'$set': {'password': self.password}})
+            return 200
+        return 404
