@@ -14,7 +14,7 @@ function Login() {
 
     useEffect(() =>{
         setLogin(login);
-        console.log("Username or email", login);
+        console.log("Email", login);
         setPwd(pwd);
         console.log("Password", pwd);
     },[login,pwd])
@@ -25,11 +25,12 @@ function Login() {
     }
 
     return (
-        <section className="login-container">
-            <h1>LOG IN PAGE</h1>
+        <section>
+            <h1 className="login-heading">Gradebook: Login</h1>
+            <section className="login-container">
             <form onSubmit={handleLogin} className="login-form">
                 <div className="input-group">
-                    <label htmlFor="login">Username or Email:</label>
+                    <label htmlFor="login">Email:</label>
                     <input
                         type="text"
                         id="login"
@@ -51,9 +52,11 @@ function Login() {
                         required
                     />
                 </div>
-
-                <button>Log In</button>
+                <br></br>
+                <br></br>
+                <button className="form-button">Login</button>
             </form>
+        </section>
         </section>
     );
   }
