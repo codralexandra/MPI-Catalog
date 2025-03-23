@@ -4,16 +4,23 @@ from flask import request
 
 class User(Resource):
     def login():
-        username = request.form['login']
-        password = request.form['pwd']
+        username = request.form.get('login')
+        password = request.form.get('pwd')
+        if not username or not password:
+            return 'Username and Password Fields Cannot Be Empty', 400
+        
+        user = UserModel(username, password)
+        user_found = user.find()
 
-        return {'role': 'student', 'id': '67dfe103090f6ad84aea4020'}, 200
-    
-    
+        if not user_found:
+            return 'User Not Found', 404
+        
+        return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
+
     def register():
-        username = request.form['username']
-        password = request.form['pwd']
-        role = request.form['role']
+        username = request.form.get('username')
+        password = request.form.get('pwd')
+        role = request.form.get('role')
         role = role.lower()
 
         if not username or not password or not role:

@@ -37,3 +37,8 @@
     ```bash
     python main.py
     ```
+
+# Running tests
+```terminal
+python -m unittest test_file_name.py
+```

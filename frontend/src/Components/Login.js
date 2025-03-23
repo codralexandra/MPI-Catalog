@@ -1,5 +1,9 @@
-import '../Stylesheets/Login.css';
+import '../Stylesheets/LoginRegister.css';
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import axiosClient from '../API/axiosClient';
+
+const LOGIN_URL = "/login";
 
 function Login() {
 
@@ -7,6 +11,10 @@ function Login() {
 
     const [login, setLogin] = useState("");
     const [pwd, setPwd] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const emailRegex = /^[a-zA-Z.]+@unitbv\.ro$/;
 
     useEffect(() => {
         loginRef.current.focus();
@@ -14,22 +22,53 @@ function Login() {
 
     useEffect(() =>{
         setLogin(login);
-        console.log("Username or email", login);
+        console.log("Email", login);
         setPwd(pwd);
         console.log("Password", pwd);
     },[login,pwd])
 
 
-    const handleLogin = (e) => {
-        // Here data will be sent to backend for confirmation of credentials.
-    }
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        if(!emailRegex.test(login)){
+            setError("Please enter a valid email address.");
+            return;
+        }
+
+        setError("");
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('login', login);
+            formData.append('pwd', pwd);
+
+            const response = await axiosClient.post(LOGIN_URL,formData);
+            
+            const data = response.data;
+            const role = data.role;
+            
+            if (role === 'student') {
+                navigate('/home');
+            } else if (role === 'teacher') {
+                navigate('/home-admin');
+            } else {
+                alert("Unknown role");
+            }
+            
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert('Something went wrong. Please try again.');
+        }
+    };
 
     return (
-        <section className="login-container">
-            <h1>LOG IN PAGE</h1>
+        <section>
+            <h1 className="login-heading">Gradebook: Login</h1>
+            <section className="login-container">
             <form onSubmit={handleLogin} className="login-form">
                 <div className="input-group">
-                    <label htmlFor="login">Username or Email:</label>
+                    <label htmlFor="login">Email:</label>
                     <input
                         type="text"
                         id="login"
@@ -41,6 +80,8 @@ function Login() {
                     />
                 </div>
 
+                {error && <div className="error-message">{error}</div>}
+
                 <div className="input-group">
                     <label htmlFor="password">Password:</label>
                     <input
@@ -51,9 +92,11 @@ function Login() {
                         required
                     />
                 </div>
-
-                <button>Log In</button>
+                <br></br>
+                <br></br>
+                <button className="form-button">Login</button>
             </form>
+        </section>
         </section>
     );
   }

@@ -1,0 +1,63 @@
+@import './Colors.css';
+
+.login-heading{
+    font-size: 70px;
+    font-weight: 1000;
+    color: var(--main-text);
+    margin-bottom: 20px;
+    margin-top:150px;
+    text-align: center;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    background-color: var(--register-forms-background);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+    font-weight:500;
+    font-size: 23px;
+}
+
+.input-group input {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 20px;
+    font-weight:500px;
+    color:var(--pages-background);
+}
+
+.form-button{
+    background-color: var(--register-form-button);
+    color: var(--button-text);
+    font-size:25px;
+    padding:10px;
+    border-radius:7px;
+    width:75%;
+    align-self: center;
+}
+
+.form-button:hover{
+    background-color: var(--register-form-button-hover);
+}
+
+.form-button:active{
+    background-color: var(--register-form-button-click);
+}
