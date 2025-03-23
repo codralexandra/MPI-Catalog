@@ -20,7 +20,6 @@ def index():
 
 """
 /login:
-    - Method: POST
     - Description: Handles user login.
     - Request Body: Expects 'login' and 'pwd' parameters.
     - Response: Returns the user ID and role if found in the database, or an error message and code if not found.
@@ -32,7 +31,6 @@ def login():
     
 """
 /register:
-    - Method: POST
     - Description: Handles user registration.
     - Request Body: Expects 'username', 'role' and 'pwd' parameters.
     - Response: Returns a success message if registration is successful, or an error message if registration fails.
@@ -43,9 +41,8 @@ def register():
 
 """
 /reset_password:
-    - Method: POST
     - Description: Handles password reset.
-    - Request Body: Expects 'login' and 'new_pwd' parameters.
+    - Request Body: Expects 'login', 'new_pwd' and 'old_pwd' parameters.
     - Response: Returns a success message if reset is successful, or an error message if the user is not found.
 """
 @app.route('/reset_password', methods=['POST'])

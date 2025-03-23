@@ -10,10 +10,12 @@ class User(Resource):
             return 'Username and Password Fields Cannot Be Empty', 400
         
         user = UserModel(username, password)
-        user_found = user.find()
+        user_found,code = user.find()
 
-        if not user_found:
+        if code == 404:
             return 'User Not Found', 404
+        if code == 403:
+            return 'Incorrect Password', 403
         
         return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
 
@@ -44,13 +46,15 @@ class User(Resource):
             return 'Username, Old Password, and New Password Fields Cannot Be Empty', 400
         
         user = UserModel(username, old_password)
-        user_found = user.find()
-        if not user_found:
+        _,code = user.find()
+        if code == 404:
             return 'User Not Found', 404
+        if code == 403:
+            return 'Incorrect Password', 403
         
-        return_code = user.reset_password(new_password= new_password)
+        code = user.reset_password(new_password= new_password)
 
-        if return_code == 404:
-            return 'User Not Found', 404
+        if code == 404:
+            return 'Password Could Be Changed', 402
         return 'Password Reset Completed', 200
 

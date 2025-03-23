@@ -24,10 +24,11 @@ class UserModel:
     
     def find(self):
         user = self.collection.find_one({'username': self.username})
-        if user:
-            if user['password'] == self.password:
-                return user
-        return None
+        if not user:
+            return None, 404
+        if user['password'] == self.password:
+            return user, 200
+        return None, 403
 
     def reset_password(self, new_password):
         user = self.collection.update_one({'username': self.username}, {'$set': {'password': new_password}})
