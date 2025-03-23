@@ -33,12 +33,7 @@ function Login() {
             formData.append('login', login);
             formData.append('pwd', pwd);
 
-            const response = await axiosClient.post(LOGIN_URL,
-                { login, pwd },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
+            const response = await axiosClient.post(LOGIN_URL,formData);
             
             const data = response.data;
             const role = data.role;
