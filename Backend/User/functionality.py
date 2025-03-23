@@ -9,6 +9,7 @@ class User(Resource):
 
         return {'role': 'student', 'id': '67dfe103090f6ad84aea4020'}, 200
     
+    
     def register():
         username = request.form['username']
         password = request.form['pwd']

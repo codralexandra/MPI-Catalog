@@ -32,7 +32,7 @@ def login():
 /register:
     - Method: POST
     - Description: Handles user registration.
-    - Request Body: Expects 'login', 'role' and 'pwd' parameters.
+    - Request Body: Expects 'username', 'role' and 'pwd' parameters.
     - Response: Returns a success message if registration is successful, or an error message if registration fails.
 """
 @app.route('/register', methods=['POST'])
