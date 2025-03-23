@@ -3,12 +3,14 @@ import os
 # Add the sub-folders to the system path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'User'))
 
-from flask import Flask
+from flask import Flask, request
+from flask_cors import CORS
 from User.functionality import User
 
 
 name = 'Gradebook'
 app = Flask(name)
+CORS(app, origins="http://localhost:3000")
 
 
 @app.route('/')
@@ -18,14 +20,17 @@ def index():
 
 """
 /login:
-    - Method: GET
+    - Method: POST
     - Description: Handles user login.
     - Request Body: Expects 'login' and 'pwd' parameters.
     - Response: Returns the user ID and role if found in the database, or an error message and code if not found.
 """
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
-    return User.login()
+    data = request.get_json()
+    email = data.get('login')
+    password = data.get('pwd')
+    return User.login(email, password)
     
     
 """

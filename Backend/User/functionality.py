@@ -3,21 +3,25 @@ from model import UserModel
 from flask import request
 
 class User(Resource):
-    def login():
-        username = request.form.get('login')
-        password = request.form.get('pwd')
-
+    
+    @staticmethod
+    def login(username, password):
+        print("LOGIN attempt with:", username, password)  # <-- Add this
         if not username or not password:
             return 'Username and Password Fields Cannot Be Empty', 400
         
         user = UserModel(username, password)
         user_found = user.find()
+
+        print("USER FOUND:", user_found)  # <-- And this
+
         if not user_found:
             return 'User Not Found', 404
         
         return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
-    
 
+    
+    @staticmethod
     def register():
         username = request.form.get('username')
         password = request.form.get('pwd')

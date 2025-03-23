@@ -1,5 +1,9 @@
 import '../Stylesheets/LoginRegister.css';
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import axiosClient from '../API/axiosClient';
+
+const LOGIN_URL = "/login";
 
 function Login() {
 
@@ -7,6 +11,7 @@ function Login() {
 
     const [login, setLogin] = useState("");
     const [pwd, setPwd] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         loginRef.current.focus();
@@ -20,9 +25,37 @@ function Login() {
     },[login,pwd])
 
 
-    const handleLogin = (e) => {
-        // Here data will be sent to backend for confirmation of credentials.
-    }
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('login', login);
+            formData.append('pwd', pwd);
+
+            const response = await axiosClient.post(LOGIN_URL,
+                { login, pwd },
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+            
+            const data = response.data;
+            const role = data.role;
+            
+            if (role === 'student') {
+                navigate('/home');
+            } else if (role === 'teacher') {
+                navigate('/home-admin');
+            } else {
+                alert("Unknown role");
+            }
+            
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert('Something went wrong. Please try again.');
+        }
+    };
 
     return (
         <section>
