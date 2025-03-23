@@ -11,7 +11,10 @@ function Login() {
 
     const [login, setLogin] = useState("");
     const [pwd, setPwd] = useState("");
+    const [error, setError] = useState("");
     const navigate = useNavigate();
+
+    const emailRegex = /^[a-zA-Z.]+@unitbv\.ro$/;
 
     useEffect(() => {
         loginRef.current.focus();
@@ -27,6 +30,13 @@ function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+
+        if(!emailRegex.test(login)){
+            setError("Please enter a valid email address.");
+            return;
+        }
+
+        setError("");
 
         try {
             const formData = new URLSearchParams();
@@ -69,6 +79,8 @@ function Login() {
                         required
                     />
                 </div>
+
+                {error && <div className="error-message">{error}</div>}
 
                 <div className="input-group">
                     <label htmlFor="password">Password:</label>
