@@ -31,7 +31,10 @@ class UserModel:
         return None, 403
 
     def reset_password(self, new_password):
-        user = self.collection.update_one({'username': self.username}, {'$set': {'password': new_password}})
-        if user.modified_count == 0:
-            return 404
+        result = self.collection.update_one(
+            {'username': self.username, 'password': self.password},
+            {'$set': {'password': new_password}}
+        )
+        if result.matched_count == 0:
+            return 404  
         return 200

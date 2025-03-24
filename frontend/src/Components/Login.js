@@ -1,9 +1,12 @@
-import '../Stylesheets/LoginRegister.css';
+import '../Stylesheets/FormPages.css';
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axiosClient from '../API/axiosClient';
 
 const LOGIN_URL = "/login";
+const STUDENT_URL = "/home";
+const TEACHER_URL = "/home-admin";
+const RESET_PASSWORD_URL = "/reset-password";
 
 function Login() {
 
@@ -22,9 +25,7 @@ function Login() {
 
     useEffect(() =>{
         setLogin(login);
-        console.log("Email", login);
         setPwd(pwd);
-        console.log("Password", pwd);
     },[login,pwd])
 
 
@@ -49,9 +50,9 @@ function Login() {
             const role = data.role;
             
             if (role === 'student') {
-                navigate('/home');
+                navigate(STUDENT_URL);
             } else if (role === 'teacher') {
-                navigate('/home-admin');
+                navigate(TEACHER_URL);
             } else {
                 alert("Unknown role");
             }
@@ -62,11 +63,15 @@ function Login() {
         }
     };
 
+    const resetPassword = () => {
+        navigate(RESET_PASSWORD_URL);
+    }
+
     return (
         <section>
-            <h1 className="login-heading">Gradebook: Login</h1>
-            <section className="login-container">
-            <form onSubmit={handleLogin} className="login-form">
+            <h1 className="heading">Gradebook: Login</h1>
+            <section className="form-container">
+            <form onSubmit={handleLogin} className="form">
                 <div className="input-group">
                     <label htmlFor="login">Email:</label>
                     <input
@@ -92,7 +97,7 @@ function Login() {
                         required
                     />
                 </div>
-                <br></br>
+                <button onClick={resetPassword}className="reset-button">Forgot password?</button>
                 <br></br>
                 <button className="form-button">Login</button>
             </form>

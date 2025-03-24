@@ -55,6 +55,6 @@ class User(Resource):
         code = user.reset_password(new_password= new_password)
 
         if code == 404:
-            return 'Password Could Be Changed', 402
+            return 'Incorrect username or password', 403
         return 'Password Reset Completed', 200
 

@@ -45,7 +45,7 @@ def register():
     - Request Body: Expects 'login', 'new_pwd' and 'old_pwd' parameters.
     - Response: Returns a success message if reset is successful, or an error message if the user is not found.
 """
-@app.route('/reset_password', methods=['POST'])
+@app.route('/reset-password', methods=['POST'])
 def reset_password():
     return User.reset_password()
 
