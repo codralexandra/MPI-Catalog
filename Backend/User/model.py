@@ -10,7 +10,9 @@ class UserModel:
 
     def save(self):
         dict = self.to_dict()
-        self.collection.insert_one(dict)
+        user = self.collection.insert_one(dict)
+        if not user:
+            return 404
         return 200
     
     def to_dict(self):
@@ -22,8 +24,24 @@ class UserModel:
     
     def find(self):
         user = self.collection.find_one({'username': self.username})
-        if user:
-            if user['password'] == self.password:
-                return user
-        return user
+        if not user:
+            return None, 404
+        if user['password'] == self.password:
+            return user, 200
+        return None, 403
 
+    def reset_password(self, new_password):
+        result = self.collection.update_one(
+            {'username': self.username, 'password': self.password},
+            {'$set': {'password': new_password}}
+        )
+        if result.matched_count == 0:
+            return 404  
+        return 200
+    
+    def delete(self):
+        """Delete the user from the database"""
+        result = self.collection.delete_one({'username': self.username})
+        if result.deleted_count == 1:
+            return 200
+        return 404

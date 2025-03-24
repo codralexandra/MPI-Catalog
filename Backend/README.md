@@ -40,5 +40,5 @@
 
 # Running tests
 ```terminal
-python -m unittest test_file_name.py
+python test_file_name.py
 ```

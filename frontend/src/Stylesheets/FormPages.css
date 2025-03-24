@@ -1,6 +1,6 @@
 @import './Colors.css';
 
-.login-heading{
+.heading{
     font-size: 70px;
     font-weight: 1000;
     color: var(--main-text);
@@ -9,7 +9,7 @@
     text-align: center;
 }
 
-.login-container {
+.form-container {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
@@ -18,7 +18,7 @@
     background-color: var(--register-forms-background);
 }
 
-.login-form {
+.form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -60,4 +60,25 @@
 
 .form-button:active{
     background-color: var(--register-form-button-click);
+}
+
+.reset-button{
+    background-color: transparent;
+    border:0px;
+    color: var(--page-background);
+    font-size:20px;
+    padding:10px;
+    border-radius:7px;
+    width:75%;
+    text-decoration: underline;
+    font-family:'Poppins';
+    margin-left:150px;
+}
+
+.reset-button:hover{
+    color: var(--additional-containter-button-clicked);
+}
+
+.reset-button:active{
+    color: var(--page-background);
 }
