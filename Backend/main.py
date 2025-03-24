@@ -49,6 +49,17 @@ def register():
 def reset_password():
     return User.reset_password()
 
+"""
+/delete_user:
+    - Description: Handles user deletion (for register testing).
+    - Request Body: Expects 'login' parameter.
+    - Response: Returns a success message if delete is successful, or an error message if the user is not found.
+"""
+@app.route('/delete-user', methods=['POST'])
+def delete_user():
+    return User.delete_user()
+
 if __name__ == '__main__':
     app.run(debug=True, port='5000', host='0.0.0.0')
+
 

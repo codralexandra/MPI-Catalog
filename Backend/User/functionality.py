@@ -57,4 +57,28 @@ class User(Resource):
         if code == 404:
             return 'Incorrect username or password', 403
         return 'Password Reset Completed', 200
+    
+    def delete_user():
+        """Delete user method"""
+        username = request.form.get('login')
+        password = ""
+
+        if not username:
+            return 'Username field cannot be empty', 400
+
+        user = UserModel(username, password)
+        user_found, code = user.find()
+
+        if code == 404:
+            return 'User Not Found', 404
+
+        delete_code = user.delete()
+
+        if delete_code == 200:
+            return 'User successfully deleted', 200
+        else:
+            return 'Error deleting user', 500
+    
+
+        
 

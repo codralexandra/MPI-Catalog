@@ -38,3 +38,10 @@ class UserModel:
         if result.matched_count == 0:
             return 404  
         return 200
+    
+    def delete(self):
+        """Delete the user from the database"""
+        result = self.collection.delete_one({'username': self.username})
+        if result.deleted_count == 1:
+            return 200
+        return 404
