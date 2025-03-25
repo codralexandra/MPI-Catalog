@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'Grade'))
 from flask import Flask
 from flask_cors import CORS
 from User.routes import user_bp
-from Backend.Course.teacher_routes import teacher_course_bp
+from Course.teacher_routes import teacher_course_bp
 
 
 name = 'Gradebook'
