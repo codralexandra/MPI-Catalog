@@ -48,11 +48,12 @@ function Login() {
             
             const data = response.data;
             const role = data.role;
+            const id = data.id;
             
             if (role === 'student') {
                 navigate(STUDENT_URL);
             } else if (role === 'teacher') {
-                navigate(TEACHER_URL);
+                navigate(TEACHER_URL, { state: { email: login, teacher_id: id } });
             } else {
                 alert("Unknown role");
             }

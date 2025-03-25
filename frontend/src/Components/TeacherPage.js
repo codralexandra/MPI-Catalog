@@ -1,7 +1,15 @@
+import '../Stylesheets/HomePages.css';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+
 function TeacherPage() {
+  const location = useLocation();
+  const email = location.state?.email;
+  const teacher_id = location.state?.teacher_id;
+
     return (
       <div>
-        <h1>Teacher Page</h1>
+        <div className="app-bar">{email}</div>
       </div>
     );
   }
