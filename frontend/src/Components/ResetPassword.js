@@ -24,11 +24,8 @@ function ResetPassword() {
     useEffect(() =>{
         setLogin(login);
         setOldPwd(oldPwd);
-        console.log("oldPwd: ",oldPwd);
         setNewPwd(newPwd);
-        console.log("newPwd: ",newPwd);
         setConfirmPwd(confirmNewPwd);
-        console.log("confirmNewPwd: ",confirmNewPwd);
     },[login,oldPwd,newPwd,confirmNewPwd])
 
 
