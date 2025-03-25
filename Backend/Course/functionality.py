@@ -35,7 +35,7 @@ class Course(Resource):
         
         courses = []
         for course in courseModels:
-            course = course.to_json()
+            course = course.to_id_name()
             courses.append(course)
 
         return courses, code
@@ -53,5 +53,5 @@ class Course(Resource):
             return 'Course Not Found', 404
         
 
-        return course.to_json(), code
+        return course.to_id_name(), code
         

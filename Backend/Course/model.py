@@ -10,7 +10,6 @@ class CourseModel():
         self.assigments:list['str'] = assigments #list of assigment ids
         self.id = id
 
-
     def __dict__(self):
         return {
             'course_name': self.course_name,
@@ -19,28 +18,20 @@ class CourseModel():
             'assigments': self.assigments
         }
     
-
-    def to_json(self):
+    def to_id_name(self):
         return {
-            '_id': str(self.id),
-            'course_name': self.course_name,
-            'teacher_id': self.teacher_id,
-            'students': self.students,
-            'assigments': self.assigments,
+            str(self.id): self.course_name
         }
     
-
     def save(self):
         if self.collection.insert_one(self.__dict__()) is None:
             return 'Course Not Added', 400
-        return 'Course Added', 200
-        
+        return 'Course Added', 200        
 
     def get_all_with_specific_teacher(self):
         coursesJSON = self.collection.find({'teacher_id': self.teacher_id})
         if not coursesJSON:
             return 'No Courses Found', 404
-        
         courses = []
         for course in coursesJSON:
             print(course)
@@ -48,7 +39,6 @@ class CourseModel():
             print(course)
             courses.append(course)
         return courses, 200
-    
 
     def get_one(self):
         course = self.collection.find_one({'_id': ObjectId(self.id)})
