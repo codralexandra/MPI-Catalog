@@ -11,6 +11,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'Grade'))
 from flask import Flask
 from flask_cors import CORS
 from User.routes import user_bp
+from Course.routes import course_bp
 
 
 name = 'Gradebook'
@@ -19,7 +20,7 @@ CORS(app, origins="http://localhost:3000")
 
 
 app.register_blueprint(user_bp)
-
+app.register_blueprint(course_bp)
 
 @app.route('/')
 def index():
