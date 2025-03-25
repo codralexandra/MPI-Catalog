@@ -10,13 +10,8 @@ class Course(Resource):
         if not teacher_id or not course_name:
             return 'Teacher ID and Course Name Fields Cannot Be Empty', 400
         
-
-        #find teacher 
-
-
         course = CourseModel(teacher_id=teacher_id, course_name=course_name)
         return course.save()
-
 
 
     def get_all():
@@ -24,8 +19,6 @@ class Course(Resource):
 
         if not teacher_id:
             return 'Teacher ID Field Cannot Be Empty', 400
-        
-        #find teacher
 
         coruseModel = CourseModel(None,teacher_id)
         courseModels,code = coruseModel.get_all_with_specific_teacher()
