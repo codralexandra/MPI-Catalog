@@ -17,7 +17,7 @@ function Login() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const emailRegex = /^[a-zA-Z.]+@unitbv\.ro$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@unitbv\.ro$/;
 
     useEffect(() => {
         loginRef.current.focus();
