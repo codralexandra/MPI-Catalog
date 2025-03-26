@@ -56,4 +56,13 @@ class CourseModel():
             course['_id']
         )
         return aux
+    
+    # uwu only for testing
+    def delete(self):
+        result = self.collection.delete_one({'_id': ObjectId(self.id)})
+        
+        if result.deleted_count == 0:
+            return 'Course Not Found', 404
+        
+        return f'Course with ID {self.id} deleted successfully', 200
         

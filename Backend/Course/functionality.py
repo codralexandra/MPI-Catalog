@@ -12,6 +12,20 @@ class Course(Resource):
         
         course = CourseModel(teacher_id=teacher_id, course_name=course_name)
         return course.save()
+    
+    # uwu only for testing again
+    def delete(self):
+        """Delete a course by course_id."""
+        course_id = request.form.get('course_id')
+
+        if not course_id:
+            return 'Course ID is required to delete a course', 400
+
+        course = CourseModel(course_name=None, teacher_id=None, students=None, assigments=None, id=course_id)
+
+        result, status_code = course.delete()
+
+        return result, status_code        
 
 
     def get_all():

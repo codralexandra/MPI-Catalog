@@ -33,4 +33,13 @@ def get_all():
 def add():
     return Course.add()
 
-
+# uwu only for testing again
+"""
+/delete:
+    - Description: Handles course deletion.
+    - Request Body: Expects 'course_id'.
+    - Response: Returns a success message if deletion is successful, or an error message if deletion fails.
+"""
+@teacher_course_bp.route('/delete', methods=['POST'])
+def delete():
+    return Course.delete()
