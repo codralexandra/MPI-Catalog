@@ -17,7 +17,7 @@ function Login() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const emailRegex = /^[a-zA-Z.]+@unitbv\.ro$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@unitbv\.ro$/;
 
     useEffect(() => {
         loginRef.current.focus();
@@ -48,11 +48,12 @@ function Login() {
             
             const data = response.data;
             const role = data.role;
+            const id = data.id;
             
             if (role === 'student') {
                 navigate(STUDENT_URL);
             } else if (role === 'teacher') {
-                navigate(TEACHER_URL);
+                navigate(TEACHER_URL, { state: { email: login, teacher_id: id } });
             } else {
                 alert("Unknown role");
             }

@@ -1,5 +1,9 @@
 @import './Colors.css';
 
+body{
+    background-color: var(--page-background);
+}
+
 .heading{
     font-size: 70px;
     font-weight: 1000;
@@ -40,8 +44,9 @@
     padding: 10px;
     border-radius: 5px;
     font-size: 20px;
+    font-family:'Poppins';
     font-weight:500px;
-    color:var(--pages-background);
+    background-color:var(--page-background);
 }
 
 .form-button{
@@ -81,4 +86,40 @@
 
 .reset-button:active{
     color: var(--page-background);
+}
+
+
+@media (max-width: 600px) {
+    .heading {
+        font-size: 36px;
+        margin-top: 80px;
+        margin-bottom:150px;
+    }
+
+    .form-container {
+        max-width: 80%;
+        margin: 30px auto;
+        padding: 15px;
+    }
+
+    .input-group label {
+        font-size: 18px;
+    }
+
+    .input-group input {
+        font-size: 16px;
+    }
+
+    .form-button {
+        font-size: 18px;
+        padding: 8px;
+        font-family:'Poppins';
+        margin-top:-10px;
+    }
+
+    .reset-button {
+        font-size: 16px;
+        margin-left: 130px;
+        text-align: center;
+    }
 }

@@ -16,7 +16,7 @@ class User(Resource):
             return 'User Not Found', 404
         if code == 403:
             return 'Incorrect Password', 403
-        
+
         return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
 
 
