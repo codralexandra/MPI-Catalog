@@ -1,0 +1,15 @@
+from flask import Blueprint
+from Student.functionality import Student
+
+student_info_bp = Blueprint('student_info_bp', __name__, url_prefix='/student/teacher')
+
+
+"""
+/post:
+    - Description: Handles student addition.
+    - Request Body: Expects 'first_name', 'second_name'.
+    - Response: Returns a the student id if addition is successful, or an error message if addition fails.
+"""
+@student_info_bp.route('/post', methods=['POST'])
+def post():
+    return Student.post()

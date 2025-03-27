@@ -1,6 +1,5 @@
 from flask_restful import Resource,request
 from Course.model import CourseModel
-from flask import request
 
 class Course(Resource):
     def post():
