@@ -43,7 +43,19 @@ def post():
 """
 @teacher_course_bp.route('/get-assignmets', methods=['GET'])
 def get_assignments():
-    return url_for('assignment.get')
+    assignment_ids ,code = Course.get_assignments()
+    if code == 404:
+        return 'No Assignments Found', 404
+    
+    assignaments_url = url_for('assignment.get', _external=True)
+    assignamets_info = []
+    for assignment_id in assignment_ids:
+        response = requests.get(assignaments_url, data={'assignment_id': assignment_id})
+        if response.status_code != 200:
+            return 'Something Went Wrong', response.status_code
+        assignamets_info.append(response.json())
+    return assignamets_info, 200
+    
 
 """
 /get-students:
@@ -54,7 +66,7 @@ def get_assignments():
 @teacher_course_bp.route('/get-students', methods=['GET'])
 def get_students():
     student_ids,code = Course.get_students()
-    if not student_ids:
+    if code == 400:
         return 'No Student ID Provided', 400
     student_info_url = url_for('student_info_bp.get_bulk_info', _external=True)
     response = requests.get(student_info_url, data={'student_ids': student_ids})

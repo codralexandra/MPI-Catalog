@@ -70,4 +70,11 @@ class CourseModel():
         if not course:
             return 'Course Not Found', 404
         return course['students'], 200
+    
+
+    def get_assignments(self):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        return course['assigments'], 200
         

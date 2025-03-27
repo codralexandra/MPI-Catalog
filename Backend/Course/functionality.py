@@ -39,7 +39,7 @@ class Course(Resource):
         coruseModel = CourseModel(None,teacher_id)
         courseModels,code = coruseModel.get_all_with_specific_teacher()
         
-        if code is not 200:
+        if code != 200:
             return 'Something Went Wrong', code
         
         courses = []
@@ -77,4 +77,17 @@ class Course(Resource):
             return 'No Students Found', 404
         
         return students, code
+    
+    def get_assignments():
+        course_id = request.form.get('course_id')
+        if not course_id:
+            return 'Course ID Field Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        assignments,code = aux.get_assignments()
+        
+        if not assignments:
+            return 'No Assignments Found', 404
+        
+        return assignments, code
         

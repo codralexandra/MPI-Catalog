@@ -18,10 +18,8 @@ class Assignment(Resource):
     
     def get():
         assignment_id = request.form.get('assignment_id')
-
         if not assignment_id:
             return 'Course ID Field Cannot Be Empty', 400
-        
         assignment = AssignmentModel(_id=assignment_id)
         assignment = assignment.get()
         if not assignment:
