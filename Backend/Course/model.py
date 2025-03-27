@@ -29,7 +29,7 @@ class CourseModel():
             return 'Course Not Added', 400
         return result.inserted_id, 200        
 
-    def get_all_with_specific_teacher(self):
+    def get_all_with_specific_teacher(self) -> tuple[list['CourseModel'], int]:
         coursesJSON = self.collection.find({'teacher_id': self.teacher_id})
         if not coursesJSON:
             return 'No Courses Found', 404

@@ -4,13 +4,13 @@ from Assignment.functionality import Assignment
 teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignment/teacher')
 
 """
-/add:
+/post:
     - Description: Handles assignment addition.
     - Request Body: Expects 'course_id', 'title', 'date_start', and 'date_end'.
     - Response: Returns a the assignment id if addition is successful, or an error message if addition fails.
 """
-@teacher_assignment_bp.route('/add', methods=['POST'])
-def add():
+@teacher_assignment_bp.route('/post', methods=['POST'])
+def post():
     return Assignment.post()
 
 """

@@ -33,7 +33,7 @@ class AssignmentModel():
             return 'Assignment Not Added', 400
         return result.inserted_id, 200
     
-    def get_all_with_specific_course(self):
+    def get_all_with_specific_course(self)->tuple[list['AssignmentModel'], int]:
         result = self.collection.find({'course_id': self.course_id})
         if result is None:
             return 'Assignments Not Found', 404
