@@ -34,9 +34,7 @@ class CourseModel():
             return 'No Courses Found', 404
         courses = []
         for course in coursesJSON:
-            print(course)
             course = self.to_course(course)
-            print(course)
             courses.append(course)
         return courses, 200
 
