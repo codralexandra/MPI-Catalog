@@ -17,20 +17,17 @@ class Assignment(Resource):
         return str(id), code
     
     def get():
-        coruse_id = request.form.get('course_id')
+        assignment_id = request.form.get('assignment_id')
 
-        if not coruse_id:
+        if not assignment_id:
             return 'Course ID Field Cannot Be Empty', 400
         
-        _ = AssignmentModel(coruse_id)
-        assigments,code = _.get_all_with_specific_course()
+        assignment = AssignmentModel(_id=assignment_id)
+        assignment = assignment.get()
+        if not assignment:
+            return 'Assignment Not Found', 404
+        return assignment.__dict__(), 200
 
-        if code == 404:
-            return 'Assignments Not Found', 404
-        
-        assigments = [assigment.__dict__() for assigment in assigments]
-
-        return assigments, 200
     
     def delete():
         assignment_id = request.form.get('assignment_id')

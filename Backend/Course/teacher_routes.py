@@ -1,5 +1,6 @@
-from flask import Blueprint
+from flask import Blueprint, url_for
 from Course.functionality import Course
+
 
 teacher_course_bp = Blueprint('course', __name__, url_prefix='/course/teacher')
 
@@ -33,6 +34,33 @@ def get():
 def post():
     return Course.post()
 
+"""
+/get-assignmets:
+    - Description: Handles assignment retrieval.
+    - Request Body: Expects 'course_id'.
+    - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
+"""
+@teacher_course_bp.route('/get-assignmets', methods=['GET'])
+def get_assignments():
+    return url_for('assignment.get')
+
+"""
+/get-students:
+    - Description: Handles student retrieval.
+    - Request Body: Expects 'course_id'.
+    - Response: Returns a list of students if retrieval is successful, or an error message if retrieval fails.
+"""
+@teacher_course_bp.route('/get-students', methods=['GET'])
+def get_students():
+    student_ids = Course.get_students()
+    if not student_ids:
+        return 'No Student ID Provided', 400
+    
+
+
+    
+
+
 # uwu only for testing again
 """
 /delete:
@@ -43,3 +71,5 @@ def post():
 @teacher_course_bp.route('/delete', methods=['DELETE'])
 def delete():
     return Course.delete()
+
+

@@ -1,7 +1,7 @@
 from flask import Blueprint
 from Assignment.functionality import Assignment
 
-teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignment/teacher')
+teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignment/')
 
 """
 /post:
@@ -16,7 +16,7 @@ def post():
 """
 /get:
     - Description: Handles assignment retrieval.
-    - Request Body: Expects 'course_id'.
+    - Request Body: Expects 'assignment_id'.
     - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
 """
 @teacher_assignment_bp.route('/get', methods = ['GET'])

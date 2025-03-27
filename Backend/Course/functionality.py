@@ -63,4 +63,18 @@ class Course(Resource):
         
 
         return course.to_id_name(), code
+    
+
+    def get_students():
+        course_id = request.form.get('course_id')
+        if not course_id:
+            return 'Course ID Field Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        students,code = aux.get_students()
+        
+        if not students:
+            return 'No Students Found', 404
+        
+        return students, code
         
