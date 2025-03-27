@@ -11,10 +11,13 @@ class Course(Resource):
             return 'Teacher ID and Course Name Fields Cannot Be Empty', 400
         
         course = CourseModel(teacher_id=teacher_id, course_name=course_name)
-        return course.save()
+        message, code = course.save()
+        if code == 400:
+            return message, code
+        return str(message), code
     
     # uwu only for testing again
-    def delete(self):
+    def delete():
         """Delete a course by course_id."""
         course_id = request.form.get('course_id')
 

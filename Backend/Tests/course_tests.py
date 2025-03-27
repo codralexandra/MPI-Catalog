@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-
+from bson.objectid import ObjectId
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from main import app
@@ -51,17 +51,17 @@ class TeacherCourseTests(unittest.TestCase):
             'course_name': 'TEST Course'
         }
 
-        response = self.client.post('/course/teacher/add', data=course_data)
-        
+        response = self.client.post('/course/teacher/post', data=course_data)
+        course_id = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Course Added', response.get_data(as_text=True))
+        self.assertTrue(ObjectId.is_valid(course_id))
         
         # I'll delete courses manually until the /add route returns a course_id as well!
         
-        # delete_response = self.client.post('/course/teacher/delete', data={'course_id': course_id})
+        delete_response = self.client.delete('/course/teacher/delete', data={'course_id': course_id})
         
-        # self.assertEqual(delete_response.status_code, 200)
-        # self.assertIn(f'Course with ID {course_id} deleted successfully', delete_response.get_data(as_text=True))
+        self.assertEqual(delete_response.status_code, 200)
+        self.assertIn(f'Course with ID {course_id} deleted successfully', delete_response.get_data(as_text=True))
         
         print("\n✅ Test - Add and Delete Course Successful")
 

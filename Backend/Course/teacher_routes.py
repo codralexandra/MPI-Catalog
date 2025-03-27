@@ -24,13 +24,13 @@ def get():
     return Course.get()
 
 """
-/add:
+/post:
     - Description: Handles course addition.
     - Request Body: Expects 'teacher_id' and 'course_name'.
     - Response: Returns a success message if addition is successful, or an error message if addition fails.
 """
-@teacher_course_bp.route('/add', methods=['POST'])
-def add():
+@teacher_course_bp.route('/post', methods=['POST'])
+def post():
     return Course.post()
 
 # uwu only for testing again
@@ -40,6 +40,6 @@ def add():
     - Request Body: Expects 'course_id'.
     - Response: Returns a success message if deletion is successful, or an error message if deletion fails.
 """
-@teacher_course_bp.route('/delete', methods=['POST'])
+@teacher_course_bp.route('/delete', methods=['DELETE'])
 def delete():
     return Course.delete()

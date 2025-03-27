@@ -31,3 +31,15 @@ class Assignment(Resource):
         assigments = [assigment.__dict__() for assigment in assigments]
 
         return assigments, 200
+    
+    def delete():
+        assignment_id = request.form.get('assignment_id')
+
+        if not assignment_id:
+            return 'Assignment ID', 400
+        
+        assigment = AssignmentModel(_id=assignment_id)
+        code = assigment.delete()
+        if code == 404:
+            return 'Assignment Not Found', 404
+        return 'Assignment Deleted', 200

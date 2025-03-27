@@ -22,3 +22,14 @@ def add():
 @teacher_assignment_bp.route('/get', methods = ['GET'])
 def get():
     return Assignment.get()
+
+
+"""
+/update:
+    - Description: Handles assignment update.
+    - Request Body: Expects 'assignment_id', 'title', 'date_start', and 'date_end'.
+    - Response: Returns a success message if update is successful, or an error message if update fails.
+"""
+@teacher_assignment_bp.route('/update', methods=['DELETE'])
+def delete():
+    return Assignment.delete()

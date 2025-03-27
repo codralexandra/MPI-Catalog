@@ -45,6 +45,12 @@ class AssignmentModel():
 
         return assignments, 200
     
+    def delete(self):
+        result = self.collection.delete_one({'_id': ObjectId(self._id)})
+        if result.deleted_count == 0:
+            return 404
+        return 200
+    
 
 
     
