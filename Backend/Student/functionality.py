@@ -13,3 +13,20 @@ class Student(Resource):
         if code == 400:
             return message, code
         return str(message), code
+    
+    def get_bulk_info():
+        student_ids = request.form.getlist('student_ids')
+        students = []
+        if not student_ids:
+            return 'No Student ID Provided', 400
+        for student_id in student_ids:
+            if not student_id:
+                continue
+            student = StudentModel(_id=student_id)
+            student = student.get()
+            if not student:
+                continue
+            students.append(student)
+
+        students = [student.__dict__() for student in students]
+        return students, 200
