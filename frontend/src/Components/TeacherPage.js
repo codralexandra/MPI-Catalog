@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axiosClient from '../API/axiosClient';
 
-const COURSES_FOR_TEACHER_URL = "/course/teacher/get-all";
+const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 
 function TeacherPage() {
   const location = useLocation();
@@ -16,7 +16,7 @@ function TeacherPage() {
     try {
       const formData = new URLSearchParams();
       formData.append('teacher_id', teacher_id);
-      const response = await axiosClient.post(COURSES_FOR_TEACHER_URL, formData);
+      const response = await axiosClient.get(COURSES_FOR_TEACHER_URL, formData);
       
       const data = response.data;
       const loadedCourses = data.map(course => {

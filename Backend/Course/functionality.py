@@ -3,7 +3,7 @@ from Course.model import CourseModel
 from flask import request
 
 class Course(Resource):
-    def add():
+    def post():
         teacher_id = request.form.get('teacher_id')
         course_name = request.form.get('course_name')
 
@@ -28,7 +28,7 @@ class Course(Resource):
         return result, status_code        
 
 
-    def get_all():
+    def get():
         teacher_id = request.form.get('teacher_id')
 
         if not teacher_id:

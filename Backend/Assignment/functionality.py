@@ -3,7 +3,7 @@ from flask_restful import request,Resource
 
 
 class Assignment(Resource):
-    def add():
+    def post():
         course_id = request.form.get('course_id')
         title = request.form.get('title')
         date_start = str(request.form.get('date_start'))

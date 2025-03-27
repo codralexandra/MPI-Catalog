@@ -14,7 +14,7 @@ class TeacherCourseTests(unittest.TestCase):
     
     def test_get_one_success(self):
         """Test successful course retrieval by course_id."""
-        response = self.client.post('/course/teacher/get-one', data={'course_id': '67e29e4c900069427cc4c358'})
+        response = self.client.get('/course/teacher/get-one', data={'course_id': '67e29e4c900069427cc4c358'})
         # Don't change this please
         # Needs to be a mongoDB generated ID
         self.assertEqual(response.status_code, 200)
@@ -27,7 +27,7 @@ class TeacherCourseTests(unittest.TestCase):
         """Test successful retrieval of all courses by teacher_id."""
         teacher_id = '67dfe187cae9f2bf02424746'
     
-        response = self.client.post('/course/teacher/get-all', data={'teacher_id': teacher_id})
+        response = self.client.get('/course/teacher/get', data={'teacher_id': teacher_id})
     
         self.assertEqual(response.status_code, 200)
 

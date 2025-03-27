@@ -11,7 +11,7 @@ teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignmen
 """
 @teacher_assignment_bp.route('/add', methods=['POST'])
 def add():
-    return Assignment.add()
+    return Assignment.post()
 
 """
 /get:
