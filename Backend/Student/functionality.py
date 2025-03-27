@@ -30,3 +30,13 @@ class Student(Resource):
 
         students = [student.__dict__() for student in students]
         return students, 200
+    
+    def delete():
+        student_id = request.form.get('student_id')
+        if not student_id:
+            return 'Student ID Field Cannot Be Empty', 400
+        student = StudentModel(_id=student_id)
+        code = student.delete()
+        if code == 404:
+            return 'Student Not Found', 404
+        return 'Student Deleted', 200

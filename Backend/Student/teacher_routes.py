@@ -23,3 +23,7 @@ def post():
 @student_info_bp.route('/get-bulk-info', methods=['GET'])
 def get_bulk_info():
     return Student.get_bulk_info()
+
+@student_info_bp.route('/delete', methods=['DELETE'])
+def delete():
+    return Student.delete()
