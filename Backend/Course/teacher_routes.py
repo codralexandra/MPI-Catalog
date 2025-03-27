@@ -1,5 +1,6 @@
 from flask import Blueprint, url_for
 from Course.functionality import Course
+import requests
 
 
 teacher_course_bp = Blueprint('course', __name__, url_prefix='/course/teacher')
@@ -52,13 +53,14 @@ def get_assignments():
 """
 @teacher_course_bp.route('/get-students', methods=['GET'])
 def get_students():
-    student_ids = Course.get_students()
+    student_ids,code = Course.get_students()
     if not student_ids:
         return 'No Student ID Provided', 400
-    
-
-
-    
+    student_info_url = url_for('student_info_bp.get_bulk_info', _external=True)
+    response = requests.get(student_info_url, data={'student_ids': student_ids})
+    if response.status_code != 200:
+        return 'Something Went Wrong', response.status_code
+    return response.json(), 200
 
 
 # uwu only for testing again

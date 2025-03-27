@@ -26,7 +26,6 @@ class StudentModel():
     
     def get(self):
         student = self.collection.find_one({'_id':ObjectId(self._id)})
-        print(student)
         if student is None:
             return None
         return StudentModel.to_student(student)

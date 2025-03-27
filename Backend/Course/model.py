@@ -64,4 +64,10 @@ class CourseModel():
             return 'Course Not Found', 404
         
         return f'Course with ID {self.id} deleted successfully', 200
+    
+    def get_students(self):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        return course['students'], 200
         
