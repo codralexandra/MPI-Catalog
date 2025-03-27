@@ -24,9 +24,10 @@ class CourseModel():
         }
     
     def save(self):
-        if self.collection.insert_one(self.__dict__()) is None:
+        result = self.collection.insert_one(self.__dict__())
+        if result is None:
             return 'Course Not Added', 400
-        return 'Course Added', 200        
+        return result.inserted_id, 200        
 
     def get_all_with_specific_teacher(self):
         coursesJSON = self.collection.find({'teacher_id': self.teacher_id})

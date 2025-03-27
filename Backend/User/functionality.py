@@ -33,9 +33,9 @@ class User(Resource):
             return 'Role must be either Student or Teacher', 400
         
         user = UserModel(username, password,role)
-        user.save()
-
-        return 'Register Completed', 200
+        id,code = user.save()
+        
+        return id, code
     
     
     def reset_password():
