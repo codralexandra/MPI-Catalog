@@ -2,7 +2,7 @@ from db_utils import db_database
 from bson.objectid import ObjectId
 
 class CourseModel():
-    def __init__(self, course_name, teacher_id, students=None, assigments=None, id=None):
+    def __init__(self, course_name, teacher_id, students=[], assigments=[], id=None):
         self.collection = db_database.get_collection('Course')
         self.course_name = course_name
         self.teacher_id = teacher_id
@@ -88,4 +88,20 @@ class CourseModel():
         if result.modified_count == 0:
             return 'Student Not Found', 404
         return 'Student Removed Successfully', 200
-        
+    
+    def add_student(self, student_id):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        if 'students' not in course or course['students'] is None:
+            self.collection.update_one(
+                {'_id': ObjectId(self.id)},
+                {'$set': {'students': []}}
+            )
+        result = self.collection.update_one(
+            {'_id': ObjectId(self.id)},
+            {'$push': {'students': student_id}}
+        )
+        if result.modified_count == 0:
+            return 'Student Not Added', 400
+        return 'Student Added Successfully', 200

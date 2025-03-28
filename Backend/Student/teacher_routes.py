@@ -26,3 +26,13 @@ def get_bulk_info():
 @student_info_bp.route('/delete', methods=['DELETE'])
 def delete():
     return Student.delete()
+
+"""
+/get-id:
+    - Description: Handles student retrieval.
+    - Request Body: Expects 'first_name', 'last_name'.
+    - Response: Returns a student's id if successful, or an error message if it fails.
+"""
+@student_info_bp.route('/get-id', methods=['POST'])
+def get_id():
+    return Student.get_id()

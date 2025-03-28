@@ -40,3 +40,19 @@ class Student(Resource):
         if code == 404:
             return 'Student Not Found', 404
         return 'Student Deleted', 200
+    
+
+    def get_id():
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        first_name = first_name.lower().strip() if first_name else first_name
+        last_name = last_name.lower().strip() if last_name else last_name
+
+        if not first_name or not last_name:
+            return 'First Name and Last Name Fields Cannot Be Empty', 400
+        
+        student = StudentModel(first_name=first_name, last_name=last_name)
+        student_id = student.get_id()
+        if not student_id:
+            return 'Student Not Found', 404
+        return student_id, 200

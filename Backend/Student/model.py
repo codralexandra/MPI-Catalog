@@ -36,4 +36,10 @@ class StudentModel():
             return 404
         return 200
     
+    def get_id(self):
+        student = self.collection.find_one({'first_name':self.first_name, 'last_name':self.last_name})
+        if student is None:
+            return None
+        return str(student['_id'])
+    
         
