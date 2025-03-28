@@ -16,6 +16,8 @@ function TeacherPage() {
   const email = location.state?.email;
   const teacher_id = location.state?.teacher_id;
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ function TeacherPage() {
 
   const handleCourseClick = async (course) => {
     setSelectedCourse(course);
-  
+    
     const updatedCourse = { ...course, assignments: [], students: [] };
   
     try {
@@ -54,7 +56,7 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a._id, a.title)
+        (a) => new Assignment(a.id, a.title)
       );
 
     } catch (error) {
@@ -69,7 +71,7 @@ function TeacherPage() {
   
       const studentData = studentRes.data;
       updatedCourse.students = studentData.map(
-        (s) => new Student(s._id, `${s.first_name} ${s.last_name}`)
+        (s) => new Student(s.id, s.first_name, s.last_name)
       );
 
     } catch (error) {
@@ -82,7 +84,13 @@ function TeacherPage() {
     );
   
     setSelectedCourse(updatedCourse);
+    setSelectedStudentId(null);
   };  
+
+  const handleStudentClick = (student) => {
+    console.log('Selected student:', student);
+    setSelectedStudentId(student.id);
+  };
 
   return (
     <div>
@@ -90,25 +98,33 @@ function TeacherPage() {
 
       <div className="data-wrapper">
         {/* COURSES */}
-        <div className="data-container" style={{ position: 'static' }}>
-          <h2>Courses</h2>
-          {courses.map((course, index) => (
-            <button
-              key={course?.id || index}
-              className="data-button"
-              style={{
-                margin: '10px 0',
-                backgroundColor:
-                  selectedCourse?.id === course.id
-                    ? 'var(--container-button-selected)'
-                    : 'var(--container-button)',
-              }}
-              onClick={() => handleCourseClick(course)}
-            >
-              {course.name}
-            </button>
-          ))}
+        <div className="data-individual-wrapper">
+            <div className="data-container" style={{ position: 'static' }}>
+              <h2>Courses</h2>
+              {courses.map((course, index) => (
+                <button
+                  key={course?.id || index}
+                  className="data-button"
+                  style={{
+                    margin: '10px 0',
+                    backgroundColor:
+                      selectedCourse?.id === course.id
+                        ? 'var(--container-button-selected)'
+                        : 'var(--container-button)',
+                  }}
+                  onClick={() => handleCourseClick(course)}
+                >
+                  {course.name}
+                </button>
+              ))}
+            </div>
+              
+            {selectedCourse && (
+              <button className="add-button">+ Add Student</button>
+            )}
+
         </div>
+        
 
         {/* ASSIGNMENTS */}
         {selectedCourse && Array.isArray(selectedCourse.assignments) && (
@@ -120,7 +136,7 @@ function TeacherPage() {
             ) : (
               selectedCourse.assignments.map((assignment) => (
                 <button
-                  key={`assignment-${assignment.id}`}
+                  key={assignment.id}
                   className="data-button"
                 >
                   {assignment.name}
@@ -132,21 +148,38 @@ function TeacherPage() {
 
         {/* STUDENTS */}
         {selectedCourse && Array.isArray(selectedCourse.students) && (
-          <div className="data-container" style={{ position: 'static' }}>
-            <h2>Students</h2>
+          <div className="data-individual-wrapper">
+              <div className="data-container" style={{ position: 'static' }}>
+                <h2>Students</h2>
 
-            {selectedCourse.students.length === 0 ? (
-              <p>No students enrolled yet.</p>
-            ) : (
-              selectedCourse.students.map((student) => (
-                <button
-                  key={`student-${student.id}`}
-                  className="data-button"
-                >
-                  {student.name}
-                </button>
-              ))
-            )}
+                {selectedCourse.students.length === 0 ? (
+                  <p>No students enrolled yet.</p>
+                ) : (
+                  selectedCourse?.students.map((student) => (
+                    <button
+                      key={student.id}
+                      className="data-button"
+                      style={{
+                        margin: '10px 0',
+                        backgroundColor:
+                          selectedStudentId === student.id
+                            ? 'var(--container-button-selected)'
+                            : 'var(--container-button)',
+                      }}
+                      onClick={() => handleStudentClick(student)}
+                    >
+                      {student.first_name} {student.last_name}
+                    </button>
+                  ))
+                )}
+              </div>
+
+              {selectedStudentId && (
+                <>
+                  <button className="add-button">Remove Student</button>
+                </>
+              )}
+
           </div>
         )}
       </div>
