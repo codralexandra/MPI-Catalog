@@ -36,7 +36,7 @@ class AssignmentTests(unittest.TestCase):
 
 
     def test_get_assignment_success(self):
-        get_response = self.client.get('/assignment/get', data={
+        get_response = self.client.post('/assignment/get', data={
             'assignment_id': '67e52c8e3f0ea5e888298b9d'
         })
         

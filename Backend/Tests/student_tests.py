@@ -38,7 +38,7 @@ class StudentTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         student_id = response.data.decode('utf-8').strip()
         
-        response = self.client.get('/student/get-bulk-info', data={
+        response = self.client.post('/student/get-bulk-info', data={
             'student_ids': [student_id]
         })
         
@@ -64,7 +64,7 @@ class StudentTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data.decode('utf-8').strip(), 'Student Deleted')
         
-        response = self.client.get('/student/get-bulk-info', data={
+        response = self.client.post('/student/get-bulk-info', data={
             'student_ids': [student_id]
         })
         data = json.loads(response.data.decode('utf-8'))
