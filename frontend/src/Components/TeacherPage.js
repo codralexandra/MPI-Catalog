@@ -18,6 +18,7 @@ const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
 const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
+const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
 
 function TeacherPage() {
   const location = useLocation();
@@ -44,7 +45,6 @@ function TeacherPage() {
   const handleStudentFormSubmit = (event) => {
     event.preventDefault();
     if (!selectedCourse || !studentFirstName.trim() || !studentLastName.trim()) return;
-    //course_id, last_name, first_name: IN FORM
 
     const addStudent = async () => {
       try {
@@ -143,6 +143,32 @@ function TeacherPage() {
     setSelectedStudentId(student.id);
   };
 
+  const handleRemoveStudent = () => {
+    const removeStudent = async () => {
+      try {
+        const removeStudentForm = new URLSearchParams();
+        removeStudentForm.append('course_id', selectedCourse.id);
+        removeStudentForm.append('student_id', selectedStudentId);
+        console.log('Remove student from course:',selectedCourse.id);
+        console.log('Remove student form:', selectedStudentId);
+        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
+        
+        console.log('Remove student response:', studentRes.data);
+
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error removing student:', error);
+        alert('Something went wrong while removing the student.');
+      }
+    }
+    removeStudent();
+  }
+
   return (
     <div>
       <div className="app-bar">{email}</div>
@@ -227,7 +253,7 @@ function TeacherPage() {
 
               {selectedStudentId && (
                 <>
-                  <button className="add-button">Remove Student</button>
+                  <button className="add-button" onClick={handleRemoveStudent}>Remove Student</button>
                 </>
               )}
 

@@ -102,7 +102,7 @@ def add_student():
     - Request Body: Expects 'course_id' and 'student_id'.
     - Response: Returns a success message if removal is successful, or an error message if removal fails.
 """
-@teacher_course_bp.route('/remove-student', methods=['DELETE'])
+@teacher_course_bp.route('/remove-student', methods=['POST'])
 def remove_student():
     return Course.remove_student()
 
