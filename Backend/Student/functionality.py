@@ -16,7 +16,7 @@ class Student(Resource):
     
     def get_bulk_info():
         student_ids = request.form.getlist('student_ids')
-        students = []
+        students:list['StudentModel'] = []
         if not student_ids:
             return 'No Student ID Provided', 400
         for student_id in student_ids:
@@ -28,7 +28,7 @@ class Student(Resource):
                 continue
             students.append(student)
 
-        students = [student.__dict__() for student in students]
+        students = [student.to_dict() for student in students]
         return students, 200
     
     def delete():

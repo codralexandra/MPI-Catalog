@@ -14,7 +14,12 @@ class StudentModel():
             'first_name': self.first_name,
             'last_name': self.last_name,
         }
-    
+    def to_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'id': str(self._id)
+        }
     def to_student(student):
         return StudentModel(first_name=student['first_name'], last_name=student['last_name'], _id=student['_id'])
     
