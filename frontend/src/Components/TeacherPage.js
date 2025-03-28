@@ -17,6 +17,7 @@ import Button from '@mui/material/Button';
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
+const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
 
 function TeacherPage() {
   const location = useLocation();
@@ -42,7 +43,31 @@ function TeacherPage() {
 
   const handleStudentFormSubmit = (event) => {
     event.preventDefault();
+    if (!selectedCourse || !studentFirstName.trim() || !studentLastName.trim()) return;
+    //course_id, last_name, first_name: IN FORM
 
+    const addStudent = async () => {
+      try {
+        const addStudentForm = new URLSearchParams();
+        addStudentForm.append('course_id', selectedCourse.id);
+        addStudentForm.append('last_name', studentLastName);
+        addStudentForm.append('first_name', studentFirstName);
+        const studentRes = await axiosClient.post(ADD_STUDENT_TO_COURSE_URL, addStudentForm);
+      
+        const studentData = studentRes.data;
+        const newStudent = new Student(studentData.id, studentData.first_name, studentData.last_name);
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: [...prevCourse.students, newStudent],
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error adding student:', error);
+        alert('Something went wrong while adding the student.');
+      }
+    };
+    addStudent();
     handleStudentDialogClose();
   };
 
