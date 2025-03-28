@@ -37,7 +37,7 @@ def post():
     return Course.post()
 
 """
-/get-assignmets:
+/get-assignments:
     - Description: Handles assignment retrieval.
     - Request Body: Expects 'course_id'.
     - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
@@ -47,11 +47,10 @@ def get_assignments():
     assignment_ids ,code = Course.get_assignments()
     if code == 404:
         return 'No Assignments Found', 404
-    
     assignaments_url = url_for('assignment.get', _external=True)
     assignamets_info = []
     for assignment_id in assignment_ids:
-        response = requests.get(assignaments_url, data={'assignment_id': assignment_id})
+        response = requests.post(assignaments_url, data={'assignment_id': assignment_id})
         if response.status_code != 200:
             return 'Something Went Wrong', response.status_code
         assignamets_info.append(response.json())

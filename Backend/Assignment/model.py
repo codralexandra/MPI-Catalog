@@ -16,6 +16,14 @@ class AssignmentModel():
             'date_end': self.date_end
         }
     
+    def to_dict(self):
+        return {
+            'title': self.title,
+            'date_start': self.date_start,
+            'date_end': self.date_end,
+            'id': str(self._id)
+        }
+    
     def to_assignment(assignment):
         return AssignmentModel(
             title=assignment['title'],
