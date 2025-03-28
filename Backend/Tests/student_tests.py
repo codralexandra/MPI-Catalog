@@ -71,6 +71,19 @@ class StudentTests(unittest.TestCase):
         self.assertEqual(len(data), 0)
         print("\n✅ Test - Successful Student Delete")
 
+    def test_get_id(self):
+        response = self.client.post('/student/get-id', data={
+            'first_name': 'alexandra',
+            'last_name': 'codru'
+        })
+
+        self.assertEqual(response.status_code, 200)
+        retrieved_id = response.data.decode('utf-8').strip()
+        student_id = '67e53c5960f8a5d53171ec46'
+    
+        self.assertEqual(student_id, retrieved_id)
+
+        print("\n✅ Test - Successful Student ID Retrieval")
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()
@@ -78,6 +91,7 @@ if __name__ == "__main__":
     suite.addTest(StudentTests('test_add_student_success'))
     suite.addTest(StudentTests('test_get_bulk_student_info'))
     suite.addTest(StudentTests('test_delete_student'))
+    suite.addTest(StudentTests('test_get_id'))
 
     runner = unittest.TextTestRunner()
     runner.run(suite)
