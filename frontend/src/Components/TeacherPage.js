@@ -55,7 +55,7 @@ function TeacherPage() {
         const studentRes = await axiosClient.post(ADD_STUDENT_TO_COURSE_URL, addStudentForm);
       
         const studentData = studentRes.data;
-        const newStudent = new Student(studentData.id, studentData.first_name, studentData.last_name);
+        const newStudent = new Student(studentData.id, studentFirstName, studentLastName);
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
           students: [...prevCourse.students, newStudent],
