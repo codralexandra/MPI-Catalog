@@ -105,3 +105,29 @@ class CourseModel():
         if result.modified_count == 0:
             return 'Student Not Added', 400
         return 'Student Added Successfully', 200
+    
+    def add_assignment(self, assignment_id):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        if 'assigments' not in course or course['assigments'] is None:
+            self.collection.update_one(
+                {'_id': ObjectId(self.id)},
+                {'$set': {'assigments': []}}
+            )
+        result = self.collection.update_one(
+            {'_id': ObjectId(self.id)},
+            {'$push': {'assigments': assignment_id}}
+        )
+        if result.modified_count == 0:
+            return 'Assignment Not Added', 400
+        return 'Assignment Added Successfully', 200
+    
+    def remove_assignment(self, assignment_id):
+        result = self.collection.update_one(
+            {'_id': ObjectId(self.id)},
+            {'$pull': {'assigments': assignment_id}}
+        )
+        if result.modified_count == 0:
+            return 'Assignment Not Found', 404
+        return 'Assignment Removed Successfully', 200
