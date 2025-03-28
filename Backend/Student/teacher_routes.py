@@ -19,10 +19,20 @@ def post():
     - Request Body: Expect a list of student_id's named 'student_ids'.
     - Response: Returns a list of the students' first and last name if successful, or an error message if it fails.
 """
-@student_info_bp.route('/get-bulk-info', methods=['GET'])
+@student_info_bp.route('/get-bulk-info', methods=['POST'])
 def get_bulk_info():
     return Student.get_bulk_info()
 
 @student_info_bp.route('/delete', methods=['DELETE'])
 def delete():
     return Student.delete()
+
+"""
+/get-id:
+    - Description: Handles student retrieval.
+    - Request Body: Expects 'first_name', 'last_name'.
+    - Response: Returns a student's id if successful, or an error message if it fails.
+"""
+@student_info_bp.route('/get-id', methods=['POST'])
+def get_id():
+    return Student.get_id()

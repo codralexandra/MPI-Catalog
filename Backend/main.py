@@ -12,7 +12,7 @@ from flask import Flask
 from flask_cors import CORS
 from User.routes import user_bp
 from Course.teacher_routes import teacher_course_bp
-from Assignment.teacher_routes import teacher_assignment_bp
+from Assignment.routes import teacher_assignment_bp
 from Student.teacher_routes import student_info_bp
 
 name = 'Gradebook'

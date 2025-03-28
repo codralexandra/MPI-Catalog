@@ -62,3 +62,118 @@ body{
     color: var(--main-text);
     font-size:25px;
 }
+
+.data-individual-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.add-button {
+    margin-top: 15px;
+    padding: 12px 24px;
+    font-size: 20px;
+    font-family: 'Poppins';
+    font-weight: 500;
+    color: var(--main-text);
+    background-color: transparent;
+    border-color: var(--main-text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: var(--additional-containter-button-clicked);
+}
+
+.custom-dialog{
+border-radius: 3; 
+font-family: 'Poppins';
+font-size: 25px;
+padding: 30px;
+}
+
+.custom-dialog .MuiDialogTitle-root {
+font-size: 30px;
+font-weight: 1000;
+color: var(--main-text);
+font-family: 'Poppins';
+}
+
+.custom-dialog .MuiInputBase-input {
+color: var(--main-text);
+font-family: 'Poppins';
+font-size:25px;
+}
+.custom-dialog .MuiInputLabel-root {
+color: var(--main-text);
+font-family: 'Poppins';
+font-size:25px;
+}
+
+.custom-dialog .MuiButton-root {
+background-color: var(--register-form-button);
+color: var(--button-text);
+font-family: 'Poppins';
+font-weight: 500;
+font-size:21px;
+text-transform: none;
+margin-left: 13px;
+padding:10px;
+}
+
+.custom-dialog .MuiButton-root:hover {
+background-color: var(--register-form-button-hover);
+}
+
+.custom-dialog .MuiButton-root:active {
+background-color: var(--register-form-button-click);
+}
+
+@media (max-width: 600px) {
+    .app-bar {
+        width: 70%;
+        margin: 30px 0 0 30px;
+    }
+
+    .data-wrapper {
+        gap: 20px;
+    }
+
+    .data-container {
+        width: 300px;
+        margin: 30px 30px 30px 30px;
+        font-size:23px;
+    }
+
+    .data-button{
+        font-size:21px;
+    }
+    
+
+    .add-button {
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+
+    .custom-dialog {
+        padding: 20px;
+    }
+
+    .custom-dialog .MuiDialogTitle-root {
+        font-size: 20px;
+    }
+        
+    .custom-dialog .MuiInputBase-input {
+        font-size:15px;
+    }
+    .custom-dialog .MuiInputLabel-root {
+        font-size:15px;
+    }
+        
+    .custom-dialog .MuiButton-root {
+        font-size:17px;
+    }
+}

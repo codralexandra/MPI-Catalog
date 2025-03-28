@@ -14,7 +14,12 @@ class StudentModel():
             'first_name': self.first_name,
             'last_name': self.last_name,
         }
-    
+    def to_dict(self):
+        return {
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'id': str(self._id)
+        }
     def to_student(student):
         return StudentModel(first_name=student['first_name'], last_name=student['last_name'], _id=student['_id'])
     
@@ -35,5 +40,11 @@ class StudentModel():
         if result.deleted_count == 0:
             return 404
         return 200
+    
+    def get_id(self):
+        student = self.collection.find_one({'first_name':self.first_name, 'last_name':self.last_name})
+        if student is None:
+            return None
+        return str(student['_id'])
     
         

@@ -16,7 +16,7 @@ class Student(Resource):
     
     def get_bulk_info():
         student_ids = request.form.getlist('student_ids')
-        students = []
+        students:list['StudentModel'] = []
         if not student_ids:
             return 'No Student ID Provided', 400
         for student_id in student_ids:
@@ -28,7 +28,7 @@ class Student(Resource):
                 continue
             students.append(student)
 
-        students = [student.__dict__() for student in students]
+        students = [student.to_dict() for student in students]
         return students, 200
     
     def delete():
@@ -40,3 +40,19 @@ class Student(Resource):
         if code == 404:
             return 'Student Not Found', 404
         return 'Student Deleted', 200
+    
+
+    def get_id():
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        first_name = first_name.lower().strip() if first_name else first_name
+        last_name = last_name.lower().strip() if last_name else last_name
+
+        if not first_name or not last_name:
+            return 'First Name and Last Name Fields Cannot Be Empty', 400
+        
+        student = StudentModel(first_name=first_name, last_name=last_name)
+        student_id = student.get_id()
+        if not student_id:
+            return 'Student Not Found', 404
+        return student_id, 200

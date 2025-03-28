@@ -7,16 +7,69 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axiosClient from '../API/axiosClient';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
+const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
+const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
 
 function TeacherPage() {
   const location = useLocation();
   const email = location.state?.email;
   const teacher_id = location.state?.teacher_id;
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedStudentId, setSelectedStudentId] = useState(null);
+
   const [courses, setCourses] = useState([]);
+  const [studentDialogOpen, setStudentDialogOpen] = useState(false);
+  const [studentFirstName, setStudentFirstName] = useState('');
+  const [studentLastName, setStudentLastName] = useState('');
+
+  const handleStudentDialogOpen = () => {
+    setStudentDialogOpen(true);
+  }
+
+  const handleStudentDialogClose = () => {
+    setStudentDialogOpen(false);
+    setStudentFirstName('');
+    setStudentLastName('');
+  };
+
+  const handleStudentFormSubmit = (event) => {
+    event.preventDefault();
+    if (!selectedCourse || !studentFirstName.trim() || !studentLastName.trim()) return;
+
+    const addStudent = async () => {
+      try {
+        const addStudentForm = new URLSearchParams();
+        addStudentForm.append('course_id', selectedCourse.id);
+        addStudentForm.append('last_name', studentLastName);
+        addStudentForm.append('first_name', studentFirstName);
+        const studentRes = await axiosClient.post(ADD_STUDENT_TO_COURSE_URL, addStudentForm);
+      
+        const studentData = studentRes.data;
+        const newStudent = new Student(studentData.id, studentFirstName, studentLastName);
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: [...prevCourse.students, newStudent],
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error adding student:', error);
+        alert('Something went wrong while adding the student.');
+      }
+    };
+    addStudent();
+    handleStudentDialogClose();
+  };
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -44,7 +97,7 @@ function TeacherPage() {
 
   const handleCourseClick = async (course) => {
     setSelectedCourse(course);
-  
+    
     const updatedCourse = { ...course, assignments: [], students: [] };
   
     try {
@@ -54,7 +107,7 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a._id, a.title)
+        (a) => new Assignment(a.id, a.title)
       );
 
     } catch (error) {
@@ -69,7 +122,7 @@ function TeacherPage() {
   
       const studentData = studentRes.data;
       updatedCourse.students = studentData.map(
-        (s) => new Student(s._id, `${s.first_name} ${s.last_name}`)
+        (s) => new Student(s.id, s.first_name, s.last_name)
       );
 
     } catch (error) {
@@ -82,7 +135,39 @@ function TeacherPage() {
     );
   
     setSelectedCourse(updatedCourse);
+    setSelectedStudentId(null);
   };  
+
+  const handleStudentClick = (student) => {
+    console.log('Selected student:', student);
+    setSelectedStudentId(student.id);
+  };
+
+  const handleRemoveStudent = () => {
+    const removeStudent = async () => {
+      try {
+        const removeStudentForm = new URLSearchParams();
+        removeStudentForm.append('course_id', selectedCourse.id);
+        removeStudentForm.append('student_id', selectedStudentId);
+        console.log('Remove student from course:',selectedCourse.id);
+        console.log('Remove student form:', selectedStudentId);
+        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
+        
+        console.log('Remove student response:', studentRes.data);
+
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error removing student:', error);
+        alert('Something went wrong while removing the student.');
+      }
+    }
+    removeStudent();
+  }
 
   return (
     <div>
@@ -90,25 +175,33 @@ function TeacherPage() {
 
       <div className="data-wrapper">
         {/* COURSES */}
-        <div className="data-container" style={{ position: 'static' }}>
-          <h2>Courses</h2>
-          {courses.map((course, index) => (
-            <button
-              key={course?.id || index}
-              className="data-button"
-              style={{
-                margin: '10px 0',
-                backgroundColor:
-                  selectedCourse?.id === course.id
-                    ? 'var(--container-button-selected)'
-                    : 'var(--container-button)',
-              }}
-              onClick={() => handleCourseClick(course)}
-            >
-              {course.name}
-            </button>
-          ))}
+        <div className="data-individual-wrapper">
+            <div className="data-container" style={{ position: 'static' }}>
+              <h2>Courses</h2>
+              {courses.map((course, index) => (
+                <button
+                  key={course?.id || index}
+                  className="data-button"
+                  style={{
+                    margin: '10px 0',
+                    backgroundColor:
+                      selectedCourse?.id === course.id
+                        ? 'var(--container-button-selected)'
+                        : 'var(--container-button)',
+                  }}
+                  onClick={() => handleCourseClick(course)}
+                >
+                  {course.name}
+                </button>
+              ))}
+            </div>
+              
+            {selectedCourse && (
+              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student</button>
+            )}
+
         </div>
+        
 
         {/* ASSIGNMENTS */}
         {selectedCourse && Array.isArray(selectedCourse.assignments) && (
@@ -120,7 +213,7 @@ function TeacherPage() {
             ) : (
               selectedCourse.assignments.map((assignment) => (
                 <button
-                  key={`assignment-${assignment.id}`}
+                  key={assignment.id}
                   className="data-button"
                 >
                   {assignment.name}
@@ -132,24 +225,88 @@ function TeacherPage() {
 
         {/* STUDENTS */}
         {selectedCourse && Array.isArray(selectedCourse.students) && (
-          <div className="data-container" style={{ position: 'static' }}>
-            <h2>Students</h2>
+          <div className="data-individual-wrapper">
+              <div className="data-container" style={{ position: 'static' }}>
+                <h2>Students</h2>
 
-            {selectedCourse.students.length === 0 ? (
-              <p>No students enrolled yet.</p>
-            ) : (
-              selectedCourse.students.map((student) => (
-                <button
-                  key={`student-${student.id}`}
-                  className="data-button"
-                >
-                  {student.name}
-                </button>
-              ))
-            )}
+                {selectedCourse.students.length === 0 ? (
+                  <p>No students enrolled yet.</p>
+                ) : (
+                  selectedCourse?.students.map((student) => (
+                    <button
+                      key={student.id}
+                      className="data-button"
+                      style={{
+                        margin: '10px 0',
+                        backgroundColor:
+                          selectedStudentId === student.id
+                            ? 'var(--container-button-selected)'
+                            : 'var(--container-button)',
+                      }}
+                      onClick={() => handleStudentClick(student)}
+                    >
+                      {student.first_name} {student.last_name}
+                    </button>
+                  ))
+                )}
+              </div>
+
+              {selectedStudentId && (
+                <>
+                  <button className="add-button" onClick={handleRemoveStudent}>Remove Student</button>
+                </>
+              )}
+
           </div>
         )}
       </div>
+
+      <Dialog
+          open={studentDialogOpen}
+          onClose={handleStudentDialogClose}
+          slotProps={{
+            paper: {
+              component: 'form',
+              onSubmit: handleStudentFormSubmit,
+              className: 'custom-dialog'
+            },
+          }}
+        >
+          <DialogTitle>Add Student</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Course"
+              fullWidth
+              variant="standard"
+              value={selectedCourse?.name || ''}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Student First Name"
+              fullWidth
+              variant="standard"
+              value={studentFirstName}
+              onChange={(e) => setStudentFirstName(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Student Last Name"
+              fullWidth
+              variant="standard"
+              value={studentLastName}
+              onChange={(e) => setStudentLastName(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleStudentDialogClose}>Cancel</Button>
+            <Button type="submit">Add</Button>
+          </DialogActions>
+        </Dialog>
     </div>
   );
 }

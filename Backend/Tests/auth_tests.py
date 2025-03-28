@@ -2,6 +2,8 @@ import unittest
 import sys
 import os
 
+# FIX TYPE ERRORS
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from main import app

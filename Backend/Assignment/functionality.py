@@ -23,7 +23,7 @@ class Assignment(Resource):
         assignment = assignment.get()
         if not assignment:
             return 'Assignment Not Found', 404
-        return assignment.__dict__(), 200
+        return assignment.to_dict(), 200
 
     
     def delete():
