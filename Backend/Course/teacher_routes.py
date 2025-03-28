@@ -90,7 +90,10 @@ def add_student():
     if response.status_code != 200:
         return 'Student Not Found', 404
     student_id = response.text
-    return Course.add_student(student_id)
+    message, code =  Course.add_student(student_id)
+    if code!= 200:
+        return message, code
+    return student_id, 200
 
 
 """"
