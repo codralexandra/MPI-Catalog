@@ -63,7 +63,7 @@ def get_assignments():
     - Request Body: Expects 'course_id'.
     - Response: Returns a list of students if retrieval is successful, or an error message if retrieval fails.
 """
-@teacher_course_bp.route('/get-students', methods=['GET'])
+@teacher_course_bp.route('/get-students', methods=['POST'])
 def get_students():
     student_ids,code = Course.get_students()
     if code == 400:
