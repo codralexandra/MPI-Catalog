@@ -12,8 +12,8 @@ class UserModel:
         dict = self.to_dict()
         user = self.collection.insert_one(dict)
         if not user:
-            return 404
-        return 200
+            return 'User could not be saved',404
+        return user.inserted_id ,200
     
     def to_dict(self):
         return {

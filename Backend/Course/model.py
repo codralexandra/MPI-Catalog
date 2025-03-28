@@ -20,23 +20,23 @@ class CourseModel():
     
     def to_id_name(self):
         return {
-            str(self.id): self.course_name
+        "id": str(self.id),
+        "course_name": self.course_name
         }
-    
-    def save(self):
-        if self.collection.insert_one(self.__dict__()) is None:
-            return 'Course Not Added', 400
-        return 'Course Added', 200        
 
-    def get_all_with_specific_teacher(self):
+    def save(self):
+        result = self.collection.insert_one(self.__dict__())
+        if result is None:
+            return 'Course Not Added', 400
+        return result.inserted_id, 200        
+
+    def get_all_with_specific_teacher(self) -> tuple[list['CourseModel'], int]:
         coursesJSON = self.collection.find({'teacher_id': self.teacher_id})
         if not coursesJSON:
             return 'No Courses Found', 404
         courses = []
         for course in coursesJSON:
-            print(course)
             course = self.to_course(course)
-            print(course)
             courses.append(course)
         return courses, 200
 
@@ -65,4 +65,17 @@ class CourseModel():
             return 'Course Not Found', 404
         
         return f'Course with ID {self.id} deleted successfully', 200
+    
+    def get_students(self):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        return course['students'], 200
+    
+
+    def get_assignments(self):
+        course = self.collection.find_one({'_id': ObjectId(self.id)})
+        if not course:
+            return 'Course Not Found', 404
+        return course['assigments'], 200
         

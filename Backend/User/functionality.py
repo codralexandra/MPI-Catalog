@@ -1,6 +1,5 @@
 from flask_restful import Resource,request
 from model import UserModel
-from flask import request
 
 class User(Resource):
     def login():
@@ -33,9 +32,9 @@ class User(Resource):
             return 'Role must be either Student or Teacher', 400
         
         user = UserModel(username, password,role)
-        user.save()
-
-        return 'Register Completed', 200
+        id,code = user.save()
+        
+        return id, code
     
     
     def reset_password():

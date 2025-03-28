@@ -1,9 +1,8 @@
 from flask_restful import Resource,request
 from Course.model import CourseModel
-from flask import request
 
 class Course(Resource):
-    def add():
+    def post():
         teacher_id = request.form.get('teacher_id')
         course_name = request.form.get('course_name')
 
@@ -11,10 +10,13 @@ class Course(Resource):
             return 'Teacher ID and Course Name Fields Cannot Be Empty', 400
         
         course = CourseModel(teacher_id=teacher_id, course_name=course_name)
-        return course.save()
+        message, code = course.save()
+        if code == 400:
+            return message, code
+        return str(message), code
     
     # uwu only for testing again
-    def delete(self):
+    def delete():
         """Delete a course by course_id."""
         course_id = request.form.get('course_id')
 
@@ -28,16 +30,15 @@ class Course(Resource):
         return result, status_code        
 
 
-    def get_all():
+    def get():
         teacher_id = request.form.get('teacher_id')
-
         if not teacher_id:
             return 'Teacher ID Field Cannot Be Empty', 400
 
         coruseModel = CourseModel(None,teacher_id)
         courseModels,code = coruseModel.get_all_with_specific_teacher()
         
-        if code is not 200:
+        if code != 200:
             return 'Something Went Wrong', code
         
         courses = []
@@ -61,4 +62,31 @@ class Course(Resource):
         
 
         return course.to_id_name(), code
+    
+
+    def get_students():
+        course_id = request.form.get('course_id')
+        if not course_id:
+            return 'Course ID Field Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        students,code = aux.get_students()
+        
+        if not students:
+            return 'No Students Found', 404
+        
+        return students, code
+    
+    def get_assignments():
+        course_id = request.form.get('course_id')
+        if not course_id:
+            return 'Course ID Field Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        assignments,code = aux.get_assignments()
+        
+        if not assignments:
+            return 'No Assignments Found', 404
+        
+        return assignments, code
         

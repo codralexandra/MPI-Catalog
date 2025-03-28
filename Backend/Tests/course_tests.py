@@ -1,7 +1,7 @@
 import unittest
 import sys
 import os
-
+from bson.objectid import ObjectId
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from main import app
@@ -14,7 +14,7 @@ class TeacherCourseTests(unittest.TestCase):
     
     def test_get_one_success(self):
         """Test successful course retrieval by course_id."""
-        response = self.client.post('/course/teacher/get-one', data={'course_id': '67e29e4c900069427cc4c358'})
+        response = self.client.get('/course/teacher/get-one', data={'course_id': '67e29e4c900069427cc4c358'})
         # Don't change this please
         # Needs to be a mongoDB generated ID
         self.assertEqual(response.status_code, 200)
@@ -27,7 +27,7 @@ class TeacherCourseTests(unittest.TestCase):
         """Test successful retrieval of all courses by teacher_id."""
         teacher_id = '67dfe187cae9f2bf02424746'
     
-        response = self.client.post('/course/teacher/get-all', data={'teacher_id': teacher_id})
+        response = self.client.get('/course/teacher/get', data={'teacher_id': teacher_id})
     
         self.assertEqual(response.status_code, 200)
 
@@ -51,17 +51,17 @@ class TeacherCourseTests(unittest.TestCase):
             'course_name': 'TEST Course'
         }
 
-        response = self.client.post('/course/teacher/add', data=course_data)
-        
+        response = self.client.post('/course/teacher/post', data=course_data)
+        course_id = response.get_data(as_text=True)
         self.assertEqual(response.status_code, 200)
-        self.assertIn('Course Added', response.get_data(as_text=True))
+        self.assertTrue(ObjectId.is_valid(course_id))
         
         # I'll delete courses manually until the /add route returns a course_id as well!
         
-        # delete_response = self.client.post('/course/teacher/delete', data={'course_id': course_id})
+        delete_response = self.client.delete('/course/teacher/delete', data={'course_id': course_id})
         
-        # self.assertEqual(delete_response.status_code, 200)
-        # self.assertIn(f'Course with ID {course_id} deleted successfully', delete_response.get_data(as_text=True))
+        self.assertEqual(delete_response.status_code, 200)
+        self.assertIn(f'Course with ID {course_id} deleted successfully', delete_response.get_data(as_text=True))
         
         print("\n✅ Test - Add and Delete Course Successful")
 
