@@ -19,6 +19,15 @@ body{
     font-weight: 500;
 }
 
+.data-wrapper{
+    display: flex;
+    justify-content: center;  
+    align-items: flex-start;  
+    gap: 50px;               
+    margin-top: 30px;
+    flex-wrap: wrap; 
+}
+
 .data-container{
     position: fixed;
     left: -300px;
@@ -46,4 +55,10 @@ body{
     font-weight:500;
     border-radius:8px;
     margin: 10px 0;
+}
+
+.data-button:hover{
+    background-color:var(--container-button-selected);
+    color: var(--main-text);
+    font-size:25px;
 }

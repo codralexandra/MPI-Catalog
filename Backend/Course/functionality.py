@@ -32,7 +32,6 @@ class Course(Resource):
 
     def get():
         teacher_id = request.form.get('teacher_id')
-
         if not teacher_id:
             return 'Teacher ID Field Cannot Be Empty', 400
 
@@ -80,6 +79,7 @@ class Course(Resource):
     
     def get_assignments():
         course_id = request.form.get('course_id')
+        print("DEBUG course_id =", course_id)
         if not course_id:
             return 'Course ID Field Cannot Be Empty', 400
         

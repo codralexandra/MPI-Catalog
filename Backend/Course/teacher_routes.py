@@ -21,7 +21,7 @@ def get_one():
     - Request Body: Expects 'teacher_id'.
     - Response: Returns a list of course ids and names if found, or an error message if no courses are found.
 """
-@teacher_course_bp.route('/get', methods=['GET'])
+@teacher_course_bp.route('/get', methods=['POST'])
 def get():
     return Course.get()
 
@@ -41,7 +41,7 @@ def post():
     - Request Body: Expects 'course_id'.
     - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
 """
-@teacher_course_bp.route('/get-assignmets', methods=['GET'])
+@teacher_course_bp.route('/get-assignments', methods=['POST'])
 def get_assignments():
     assignment_ids ,code = Course.get_assignments()
     if code == 404:

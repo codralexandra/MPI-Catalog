@@ -20,9 +20,10 @@ class CourseModel():
     
     def to_id_name(self):
         return {
-            str(self.id): self.course_name
+        "id": str(self.id),
+        "course_name": self.course_name
         }
-    
+
     def save(self):
         result = self.collection.insert_one(self.__dict__())
         if result is None:
