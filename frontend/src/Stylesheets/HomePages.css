@@ -130,3 +130,50 @@ background-color: var(--register-form-button-hover);
 .custom-dialog .MuiButton-root:active {
 background-color: var(--register-form-button-click);
 }
+
+@media (max-width: 600px) {
+    .app-bar {
+        width: 70%;
+        margin: 30px 0 0 30px;
+    }
+
+    .data-wrapper {
+        gap: 20px;
+    }
+
+    .data-container {
+        width: 300px;
+        margin: 30px 30px 30px 30px;
+        font-size:23px;
+    }
+
+    .data-button{
+        font-size:21px;
+    }
+    
+
+    .add-button {
+        margin-bottom: 10px;
+        padding: 10px 20px;
+        font-size: 18px;
+    }
+
+    .custom-dialog {
+        padding: 20px;
+    }
+
+    .custom-dialog .MuiDialogTitle-root {
+        font-size: 20px;
+    }
+        
+    .custom-dialog .MuiInputBase-input {
+        font-size:15px;
+    }
+    .custom-dialog .MuiInputLabel-root {
+        font-size:15px;
+    }
+        
+    .custom-dialog .MuiButton-root {
+        font-size:17px;
+    }
+}
