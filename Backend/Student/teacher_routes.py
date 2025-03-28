@@ -3,7 +3,6 @@ from Student.functionality import Student
 
 student_info_bp = Blueprint('student_info_bp', __name__, url_prefix='/student')
 
-
 """
 /post:
     - Description: Handles student addition.
