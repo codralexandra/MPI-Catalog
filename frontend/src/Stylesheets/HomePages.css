@@ -86,3 +86,47 @@ body{
 .add-button:hover {
     background-color: var(--additional-containter-button-clicked);
 }
+
+.custom-dialog{
+border-radius: 3; 
+font-family: 'Poppins';
+font-size: 25px;
+padding: 30px;
+}
+
+.custom-dialog .MuiDialogTitle-root {
+font-size: 30px;
+font-weight: 1000;
+color: var(--main-text);
+font-family: 'Poppins';
+}
+
+.custom-dialog .MuiInputBase-input {
+color: var(--main-text);
+font-family: 'Poppins';
+font-size:25px;
+}
+.custom-dialog .MuiInputLabel-root {
+color: var(--main-text);
+font-family: 'Poppins';
+font-size:25px;
+}
+
+.custom-dialog .MuiButton-root {
+background-color: var(--register-form-button);
+color: var(--button-text);
+font-family: 'Poppins';
+font-weight: 500;
+font-size:21px;
+text-transform: none;
+margin-left: 13px;
+padding:10px;
+}
+
+.custom-dialog .MuiButton-root:hover {
+background-color: var(--register-form-button-hover);
+}
+
+.custom-dialog .MuiButton-root:active {
+background-color: var(--register-form-button-click);
+}

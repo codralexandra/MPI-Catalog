@@ -7,6 +7,13 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axiosClient from '../API/axiosClient';
 
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
@@ -19,6 +26,25 @@ function TeacherPage() {
   const [selectedStudentId, setSelectedStudentId] = useState(null);
 
   const [courses, setCourses] = useState([]);
+  const [studentDialogOpen, setStudentDialogOpen] = useState(false);
+  const [studentFirstName, setStudentFirstName] = useState('');
+  const [studentLastName, setStudentLastName] = useState('');
+
+  const handleStudentDialogOpen = () => {
+    setStudentDialogOpen(true);
+  }
+
+  const handleStudentDialogClose = () => {
+    setStudentDialogOpen(false);
+    setStudentFirstName('');
+    setStudentLastName('');
+  };
+
+  const handleStudentFormSubmit = (event) => {
+    event.preventDefault();
+
+    handleStudentDialogClose();
+  };
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -120,7 +146,7 @@ function TeacherPage() {
             </div>
               
             {selectedCourse && (
-              <button className="add-button">+ Add Student</button>
+              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student</button>
             )}
 
         </div>
@@ -183,6 +209,53 @@ function TeacherPage() {
           </div>
         )}
       </div>
+
+      <Dialog
+          open={studentDialogOpen}
+          onClose={handleStudentDialogClose}
+          slotProps={{
+            paper: {
+              component: 'form',
+              onSubmit: handleStudentFormSubmit,
+              className: 'custom-dialog'
+            },
+          }}
+        >
+          <DialogTitle>Add Student</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Course"
+              fullWidth
+              variant="standard"
+              value={selectedCourse?.name || ''}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Student First Name"
+              fullWidth
+              variant="standard"
+              value={studentFirstName}
+              onChange={(e) => setStudentFirstName(e.target.value)}
+            />
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Student Last Name"
+              fullWidth
+              variant="standard"
+              value={studentLastName}
+              onChange={(e) => setStudentLastName(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleStudentDialogClose}>Cancel</Button>
+            <Button type="submit">Add</Button>
+          </DialogActions>
+        </Dialog>
     </div>
   );
 }
