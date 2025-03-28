@@ -75,6 +75,26 @@ def get_students():
     return response.json(), 200
 
 
+"""
+/add-student:
+    - Description: Handles student addition.
+    - Request Body: Expects 'course_id' and 'first_name', 'last_name'.
+    - Response: Returns a success message if addition is successful, or an error message if addition fails.
+"""
+
+
+
+""""
+/remove-student:
+    - Description: Handles student removal.
+    - Request Body: Expects 'course_id' and 'student_id'.
+    - Response: Returns a success message if removal is successful, or an error message if removal fails.
+"""
+@teacher_course_bp.route('/remove-student', methods=['DELETE'])
+def remove_student():
+    return Course.remove_student()
+
+
 # uwu only for testing again
 """
 /delete:

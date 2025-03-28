@@ -90,3 +90,14 @@ class Course(Resource):
         
         return assignments, code
         
+    def remove_student():
+        course_id = request.form.get('course_id')
+        student_id = request.form.get('student_id')
+
+        if not course_id or not student_id:
+            return 'Course ID and Student ID Fields Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        message,code = aux.remove_student(student_id)
+
+        return message, code

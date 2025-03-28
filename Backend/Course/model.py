@@ -78,4 +78,14 @@ class CourseModel():
         if not course:
             return 'Course Not Found', 404
         return course['assigments'], 200
+    
+
+    def remove_student(self, student_id):
+        result = self.collection.update_one(
+            {'_id': ObjectId(self.id)},
+            {'$pull': {'students': student_id}}
+        )
+        if result.modified_count == 0:
+            return 'Student Not Found', 404
+        return 'Student Removed Successfully', 200
         
