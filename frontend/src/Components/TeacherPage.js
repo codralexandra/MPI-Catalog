@@ -23,6 +23,7 @@ const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
 const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
 const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
 const ADD_ASSIGNMENT_TO_COURSE_URL = "/course/teacher/add-assignment";
+const REMOVE_ASSIGNMENT_FROM_COURSE_URL = "/course/teacher/remove-assignment";
 
 function TeacherPage() {
   const location = useLocation();
@@ -42,7 +43,7 @@ function TeacherPage() {
   const [assignmentStartDate, setAssignmentStartDate] = useState(null);
   const [assignmentEndDate, setAssignmentEndDate] = useState(null);
 
-
+  {/*HANDLE ASSIGNMENT DATA*/}
   const handleAssignmentDialogOpen = () => {
     setAssignmentDialogOpen(true);
   }
@@ -82,11 +83,7 @@ function TeacherPage() {
         console.error('Error adding assignment:', error);
         alert('Something went wrong while adding the assignment.');
       }
-
-      
     }
-    
-
     addAssignment();
     handleAssignmentDialogClose();
   }
@@ -95,6 +92,28 @@ function TeacherPage() {
     setSelectedAssignmentId(assignment.id);
   };
 
+  const handleRemoveAssignment = () => {
+    const removeAssignment = async () => {
+      try{
+        const removeAssignmentForm = new URLSearchParams();
+        removeAssignmentForm.append('course_id', selectedCourse.id);
+        removeAssignmentForm.append('assignment_id', selectedAssignmentId);
+        const assignmentRes = await axiosClient.post(REMOVE_ASSIGNMENT_FROM_COURSE_URL, removeAssignmentForm);
+
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          assignments: prevCourse.assignments.filter((a) => a.id !== selectedAssignmentId),
+        }));
+      }
+      catch(error){
+        console.error('Error removing assignment:', error);
+        alert('Something went wrong while removing the assignment.');
+      }
+    }
+    removeAssignment();
+  }
+
+  {/*HANDLE STUDENT DATA*/}
   const handleStudentDialogOpen = () => {
     setStudentDialogOpen(true);
   }
@@ -144,15 +163,11 @@ function TeacherPage() {
         const removeStudentForm = new URLSearchParams();
         removeStudentForm.append('course_id', selectedCourse.id);
         removeStudentForm.append('student_id', selectedStudentId);
-        console.log('Remove student from course:',selectedCourse.id);
-        console.log('Remove student form:', selectedStudentId);
         const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
-        
-        console.log('Remove student response:', studentRes.data);
-
+  
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
-          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
+          students: prevCourse.students.filter((s) => s.id !== selectedStudentId)
         }));
         
       }
@@ -302,7 +317,7 @@ function TeacherPage() {
               <div style={{ display: 'flex', gap: '30px', marginTop: '10px' }}>
                 <button className="add-button" onClick={handleAssignmentDialogOpen}>+ Add Assignment</button>
                 {selectedAssignmentId && (
-                <button className="add-button">Delete</button>
+                <button className="add-button" onClick={handleRemoveAssignment}>Delete</button>
                 )}
               </div>
 
@@ -367,6 +382,7 @@ function TeacherPage() {
               fullWidth
               variant="standard"
               value={selectedCourse?.name || ''}
+              readOnly
             />
             <TextField
               autoFocus
@@ -416,6 +432,7 @@ function TeacherPage() {
               fullWidth
               variant="standard"
               value={selectedCourse?.name || ''}
+              readOnly
             />
 
             <TextField
@@ -439,6 +456,9 @@ function TeacherPage() {
                   variant: 'standard',
                   fullWidth: true,
                   required: true,
+                  inputProps: {
+                    readOnly: true
+                  },
                 },
               }}
             />
@@ -453,6 +473,9 @@ function TeacherPage() {
                   variant: 'standard',
                   fullWidth: true,
                   required: true,
+                  inputProps: {
+                    readOnly: true
+                  },
                 },
               }}
             />

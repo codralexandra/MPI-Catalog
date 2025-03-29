@@ -28,7 +28,6 @@ class Assignment(Resource):
     
     def delete():
         assignment_id = request.form.get('assignment_id')
-        print(assignment_id)
         if not assignment_id:
             return 'Assignment ID', 400
         
