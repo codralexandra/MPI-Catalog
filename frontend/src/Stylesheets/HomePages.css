@@ -4,6 +4,15 @@ body{
     background-color: var(--page-background);
 }
 
+h2{
+    color: var(--main-text);
+    font-family: 'Poppins';
+    font-size: 50px;
+    font-weight: 700;
+    margin: 0;
+    text-align: left;
+}
+
 .app-bar {
     width: 30%;    
     height: 60px;
@@ -32,35 +41,66 @@ body{
     position: fixed;
     left: -300px;
     width: 400px;
-    height: 100%;
+    height: 550px;
     background-color: var(--container-background);
     color: var(--main-text);
     display: flex;
     flex-direction: column;
-    padding: 0px 20px 20px 20px;
+    padding: 10px 20px 20px 20px;
     transition: left 0.3s ease-in-out;
     z-index: 1000;
     border-radius:8px;
     margin: 30px 70px 30px 80px;
     font-size:28px;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--register-form-button) transparent;
 }
+
+.data-container::-webkit-scrollbar {
+    width: 10px; 
+}
+
+.data-container::-webkit-scrollbar-track {
+    background: transparent; 
+    border-radius: 8px;
+}
+
+.data-container::-webkit-scrollbar-thumb {
+    background-color: var(--register-form-button); 
+    border-radius: 8px;
+    border: 2px solid var(--container-background); 
+}
+
+.data-container::-webkit-scrollbar-thumb:hover {
+    background-color: var(--additional-containter-button-clicked); 
+}
+
 
 .data-button{
     background-color:var(--container-button);
     color: var(--main-text);
     border-color:transparent;
     padding:20px;
-    font-size:25px;
+    font-size:27px;
     font-family:'Poppins';
     font-weight:500;
     border-radius:8px;
-    margin: 10px 0;
+    margin: 20px 0;
+}
+
+.data-button-subtext{
+    font-size:20px;
+    font-family:'Poppins';
+    font-weight:500;
+    font-style:oblique;
 }
 
 .data-button:hover{
     background-color:var(--container-button-selected);
     color: var(--main-text);
-    font-size:25px;
+    font-size:27px;
 }
 
 .data-individual-wrapper {

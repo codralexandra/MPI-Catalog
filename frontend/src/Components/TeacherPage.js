@@ -26,11 +26,17 @@ function TeacherPage() {
   const teacher_id = location.state?.teacher_id;
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
 
   const [courses, setCourses] = useState([]);
   const [studentDialogOpen, setStudentDialogOpen] = useState(false);
   const [studentFirstName, setStudentFirstName] = useState('');
   const [studentLastName, setStudentLastName] = useState('');
+
+  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
+  const [assignmentTitle, setAssignmentTitle] = useState('');
+  const [assignmentStartDate, setAssignmentStartDate] = useState('');
+  const [assignmentEndDate, setAssignmentEndDate] = useState('');
 
   const handleStudentDialogOpen = () => {
     setStudentDialogOpen(true);
@@ -41,6 +47,22 @@ function TeacherPage() {
     setStudentFirstName('');
     setStudentLastName('');
   };
+
+  const handleAssignmentDialogOpen = () => {
+    setAssignmentDialogOpen(true);
+  }
+
+  const handleAssignmentDialogClose = () => {
+    setAssignmentDialogOpen(false);
+    setAssignmentTitle('');
+    setAssignmentStartDate('');
+    setAssignmentEndDate('');
+  };
+
+  const handleAssignmentFormSubmit = (event) => {
+    event.preventDefault();
+    handleAssignmentDialogClose();
+  }
 
   const handleStudentFormSubmit = (event) => {
     event.preventDefault();
@@ -107,7 +129,7 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a.id, a.title)
+        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end)
       );
 
     } catch (error) {
@@ -136,11 +158,15 @@ function TeacherPage() {
   
     setSelectedCourse(updatedCourse);
     setSelectedStudentId(null);
+    setSelectedAssignmentId(null);
   };  
 
   const handleStudentClick = (student) => {
-    console.log('Selected student:', student);
     setSelectedStudentId(student.id);
+  };
+
+  const handleAssignmentClick = (assignment) => {
+    setSelectedAssignmentId(assignment.id);
   };
 
   const handleRemoveStudent = () => {
@@ -176,8 +202,8 @@ function TeacherPage() {
       <div className="data-wrapper">
         {/* COURSES */}
         <div className="data-individual-wrapper">
+          <h2>Courses</h2>
             <div className="data-container" style={{ position: 'static' }}>
-              <h2>Courses</h2>
               {courses.map((course, index) => (
                 <button
                   key={course?.id || index}
@@ -197,7 +223,7 @@ function TeacherPage() {
             </div>
               
             {selectedCourse && (
-              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student</button>
+              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student to {selectedCourse.name}</button>
             )}
 
         </div>
@@ -205,30 +231,51 @@ function TeacherPage() {
 
         {/* ASSIGNMENTS */}
         {selectedCourse && Array.isArray(selectedCourse.assignments) && (
-          <div className="data-container" style={{ position: 'static' }}>
+          <div className="data-individual-wrapper">
             <h2>Assignments</h2>
+            <div className="data-container" style={{ position: 'static' }}>
+                {selectedCourse.assignments.length === 0 ? (
+                  <p>No assignments yet.</p>
+                ) : (
+                  selectedCourse.assignments.map((assignment) => (
+                    <button
+                      key={assignment.id}
+                      className="data-button"
+                      style={{
+                        margin: '10px 0',
+                        backgroundColor:
+                          selectedAssignmentId === assignment.id
+                            ? 'var(--container-button-selected)'
+                            : 'var(--container-button)',
+                      }}
+                      onClick={() => handleAssignmentClick(assignment)}
+                    >
+                      {assignment.title} <br></br> 
+                      <div className="data-button-subtext">
+                        Opens on: {assignment.start_date}<br></br> 
+                        Due date:{assignment.end_date}
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
 
-            {selectedCourse.assignments.length === 0 ? (
-              <p>No assignments yet.</p>
-            ) : (
-              selectedCourse.assignments.map((assignment) => (
-                <button
-                  key={assignment.id}
-                  className="data-button"
-                >
-                  {assignment.name}
-                </button>
-              ))
-            )}
+              <div style={{ display: 'flex', gap: '30px', marginTop: '10px' }}>
+                <button className="add-button">+ Add Assignment</button>
+                {selectedAssignmentId && (
+                <button className="add-button">Delete</button>
+                )}
+              </div>
+
           </div>
+          
         )}
 
         {/* STUDENTS */}
         {selectedCourse && Array.isArray(selectedCourse.students) && (
           <div className="data-individual-wrapper">
+              <h2>Students</h2>
               <div className="data-container" style={{ position: 'static' }}>
-                <h2>Students</h2>
-
                 {selectedCourse.students.length === 0 ? (
                   <p>No students enrolled yet.</p>
                 ) : (
