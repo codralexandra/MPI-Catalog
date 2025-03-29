@@ -53,6 +53,7 @@ body{
     background-color: var(--register-form-button);
     color: var(--button-text);
     font-size:25px;
+    font-family:'Poppins';
     padding:10px;
     border-radius:7px;
     width:75%;

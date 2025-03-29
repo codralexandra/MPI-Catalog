@@ -55,6 +55,37 @@ def get_assignments():
             return 'Something Went Wrong', response.status_code
         assignamets_info.append(response.json())
     return assignamets_info, 200
+
+"""
+/add-assignment:
+    - Description: Handles assignment addition.
+    - Request Body: Expects 'course_id' and 'title', 'date_start' and 'date_end'.
+    - Response: Returns id if addition is successful, or an error message if addition fails."""
+@teacher_course_bp.route('/add-assignment', methods=['POST'])
+def add_assignment():
+    assignmnets_url = url_for('assignment.post', _external=True)
+    result = requests.post(assignmnets_url, data={'title': request.form.get('title'), 'date_start': request.form.get('date_start'), 'date_end': request.form.get('date_end')})
+    if result.status_code != 200:
+        return 'Assignment could not be created', 404
+    assignemnt_id = result.text
+    message, code = Course.add_assignment(assignemnt_id)
+    if code != 200:
+        return message, code
+    return assignemnt_id, 200
+
+"""
+/remove-assignment:
+    - Description: Handles assignment removal.
+    - Request Body: Expects 'course_id' and 'assignment_id'.
+    - Response: Returns a success message if removal is successful, or an error message if removal fails.
+"""
+@teacher_course_bp.route('/remove-assignment', methods=['POST'])
+def remove_assignment():
+    assignments_url = url_for('assignment.delete', _external=True)
+    response = requests.delete(assignments_url, data={'assignment_id': request.form.get('assignment_id')})
+    if response.status_code != 200:
+        return 'Assignment Not Found', 404
+    return Course.remove_assignment()
     
 
 """

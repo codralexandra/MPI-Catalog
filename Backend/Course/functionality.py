@@ -111,3 +111,25 @@ class Course(Resource):
         message,code = aux.add_student(student_id)
 
         return message, code
+    
+    def add_assignment(assignment_id):
+        course_id = request.form.get('course_id')
+        if not assignment_id or not course_id:
+            return 'Assignment ID and Course ID Fields Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        message,code = aux.add_assignment(assignment_id)
+
+        return message, code
+    
+    def remove_assignment():
+        course_id = request.form.get('course_id')
+        assignment_id = request.form.get('assignment_id')
+
+        if not course_id or not assignment_id:
+            return 'Course ID and Assignment ID Fields Cannot Be Empty', 400
+        
+        aux = CourseModel(None,None,id=course_id)
+        message,code = aux.remove_assignment(assignment_id)
+
+        return message, code

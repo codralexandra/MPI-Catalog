@@ -13,12 +13,17 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
 const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
 const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
+const ADD_ASSIGNMENT_TO_COURSE_URL = "/course/teacher/add-assignment";
+const REMOVE_ASSIGNMENT_FROM_COURSE_URL = "/course/teacher/remove-assignment";
 
 function TeacherPage() {
   const location = useLocation();
@@ -26,12 +31,89 @@ function TeacherPage() {
   const teacher_id = location.state?.teacher_id;
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+  const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
 
   const [courses, setCourses] = useState([]);
   const [studentDialogOpen, setStudentDialogOpen] = useState(false);
   const [studentFirstName, setStudentFirstName] = useState('');
   const [studentLastName, setStudentLastName] = useState('');
 
+  const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
+  const [assignmentTitle, setAssignmentTitle] = useState('');
+  const [assignmentStartDate, setAssignmentStartDate] = useState(null);
+  const [assignmentEndDate, setAssignmentEndDate] = useState(null);
+
+  {/*HANDLE ASSIGNMENT DATA*/}
+  const handleAssignmentDialogOpen = () => {
+    setAssignmentDialogOpen(true);
+  }
+
+  const handleAssignmentDialogClose = () => {
+    setAssignmentDialogOpen(false);
+    setAssignmentTitle('');
+    setAssignmentStartDate(null);
+    setAssignmentEndDate(null);
+  };
+
+  const handleAssignmentFormSubmit = (event) => {
+    event.preventDefault();
+    if (!selectedCourse || !assignmentTitle.trim() || !assignmentStartDate || !assignmentEndDate) return;
+
+    const addAssignment = async () => {
+      try{
+        const formattedStartDate = dayjs(assignmentStartDate).format('DD.MM.YYYY');
+        const formattedEndDate = dayjs(assignmentEndDate).format('DD.MM.YYYY');
+
+        const addAssignmentForm = new URLSearchParams();
+        addAssignmentForm.append('course_id', selectedCourse.id);
+        addAssignmentForm.append('title', assignmentTitle);
+        addAssignmentForm.append('date_start', formattedStartDate);
+        addAssignmentForm.append('date_end', formattedEndDate);
+        const assignmentRes = await axiosClient.post(ADD_ASSIGNMENT_TO_COURSE_URL, addAssignmentForm);
+
+        const assignmentData = assignmentRes.data;  
+        const newAssignment = new Assignment(assignmentData.id, assignmentTitle, formattedStartDate, formattedEndDate);
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          assignments: [...prevCourse.assignments, newAssignment],
+        }));
+
+      }
+      catch(error){
+        console.error('Error adding assignment:', error);
+        alert('Something went wrong while adding the assignment.');
+      }
+    }
+    addAssignment();
+    handleAssignmentDialogClose();
+  }
+
+  const handleAssignmentClick = (assignment) => {
+    setSelectedAssignmentId(assignment.id);
+  };
+
+  const handleRemoveAssignment = () => {
+    const removeAssignment = async () => {
+      try{
+        const removeAssignmentForm = new URLSearchParams();
+        removeAssignmentForm.append('course_id', selectedCourse.id);
+        removeAssignmentForm.append('assignment_id', selectedAssignmentId);
+        const assignmentRes = await axiosClient.post(REMOVE_ASSIGNMENT_FROM_COURSE_URL, removeAssignmentForm);
+
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          assignments: prevCourse.assignments.filter((a) => a.id !== selectedAssignmentId),
+        }));
+      }
+      catch(error){
+        console.error('Error removing assignment:', error);
+        alert('Something went wrong while removing the assignment.');
+      }
+    }
+    removeAssignment();
+  }
+
+  {/*HANDLE STUDENT DATA*/}
   const handleStudentDialogOpen = () => {
     setStudentDialogOpen(true);
   }
@@ -71,6 +153,33 @@ function TeacherPage() {
     handleStudentDialogClose();
   };
 
+  const handleStudentClick = (student) => {
+    setSelectedStudentId(student.id);
+  };
+
+  const handleRemoveStudent = () => {
+    const removeStudent = async () => {
+      try {
+        const removeStudentForm = new URLSearchParams();
+        removeStudentForm.append('course_id', selectedCourse.id);
+        removeStudentForm.append('student_id', selectedStudentId);
+        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
+  
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: prevCourse.students.filter((s) => s.id !== selectedStudentId)
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error removing student:', error);
+        alert('Something went wrong while removing the student.');
+      }
+    }
+    removeStudent();
+  }
+
+
   useEffect(() => {
     const loadCourses = async () => {
       if (!teacher_id) return;
@@ -99,7 +208,8 @@ function TeacherPage() {
     setSelectedCourse(course);
     
     const updatedCourse = { ...course, assignments: [], students: [] };
-  
+
+    {/*GET ASSIGNMENTS FOR SELECTED COURSE*/}
     try {
       const assignmentForm = new URLSearchParams();
       assignmentForm.append('course_id', course.id);
@@ -107,14 +217,14 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a.id, a.title)
+        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end)
       );
 
     } catch (error) {
       console.error(`Failed to load assignments for course ${course.id}`, error);
       updatedCourse.assignments = [];
     }
-  
+    {/*GET STUDENTS FOR SELECTED COURSE*/}
     try {
       const studentForm = new URLSearchParams();
       studentForm.append('course_id', course.id);
@@ -136,38 +246,8 @@ function TeacherPage() {
   
     setSelectedCourse(updatedCourse);
     setSelectedStudentId(null);
+    setSelectedAssignmentId(null);
   };  
-
-  const handleStudentClick = (student) => {
-    console.log('Selected student:', student);
-    setSelectedStudentId(student.id);
-  };
-
-  const handleRemoveStudent = () => {
-    const removeStudent = async () => {
-      try {
-        const removeStudentForm = new URLSearchParams();
-        removeStudentForm.append('course_id', selectedCourse.id);
-        removeStudentForm.append('student_id', selectedStudentId);
-        console.log('Remove student from course:',selectedCourse.id);
-        console.log('Remove student form:', selectedStudentId);
-        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
-        
-        console.log('Remove student response:', studentRes.data);
-
-        setSelectedCourse((prevCourse) => ({
-          ...prevCourse,
-          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
-        }));
-        
-      }
-      catch (error) {
-        console.error('Error removing student:', error);
-        alert('Something went wrong while removing the student.');
-      }
-    }
-    removeStudent();
-  }
 
   return (
     <div>
@@ -176,8 +256,8 @@ function TeacherPage() {
       <div className="data-wrapper">
         {/* COURSES */}
         <div className="data-individual-wrapper">
+          <h2>Courses</h2>
             <div className="data-container" style={{ position: 'static' }}>
-              <h2>Courses</h2>
               {courses.map((course, index) => (
                 <button
                   key={course?.id || index}
@@ -197,7 +277,7 @@ function TeacherPage() {
             </div>
               
             {selectedCourse && (
-              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student</button>
+              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student to {selectedCourse.name}</button>
             )}
 
         </div>
@@ -205,30 +285,51 @@ function TeacherPage() {
 
         {/* ASSIGNMENTS */}
         {selectedCourse && Array.isArray(selectedCourse.assignments) && (
-          <div className="data-container" style={{ position: 'static' }}>
+          <div className="data-individual-wrapper">
             <h2>Assignments</h2>
+            <div className="data-container" style={{ position: 'static' }}>
+                {selectedCourse.assignments.length === 0 ? (
+                  <p>No assignments yet.</p>
+                ) : (
+                  selectedCourse.assignments.map((assignment) => (
+                    <button
+                      key={assignment.id}
+                      className="data-button"
+                      style={{
+                        margin: '10px 0',
+                        backgroundColor:
+                          selectedAssignmentId === assignment.id
+                            ? 'var(--container-button-selected)'
+                            : 'var(--container-button)',
+                      }}
+                      onClick={() => handleAssignmentClick(assignment)}
+                    >
+                      {assignment.title} <br></br> 
+                      <div className="data-button-subtext">
+                        Opens on: {assignment.start_date}<br></br> 
+                        Due date: {assignment.end_date}
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
 
-            {selectedCourse.assignments.length === 0 ? (
-              <p>No assignments yet.</p>
-            ) : (
-              selectedCourse.assignments.map((assignment) => (
-                <button
-                  key={assignment.id}
-                  className="data-button"
-                >
-                  {assignment.name}
-                </button>
-              ))
-            )}
+              <div style={{ display: 'flex', gap: '30px', marginTop: '10px' }}>
+                <button className="add-button" onClick={handleAssignmentDialogOpen}>+ Add Assignment</button>
+                {selectedAssignmentId && (
+                <button className="add-button" onClick={handleRemoveAssignment}>Delete</button>
+                )}
+              </div>
+
           </div>
+          
         )}
 
         {/* STUDENTS */}
         {selectedCourse && Array.isArray(selectedCourse.students) && (
           <div className="data-individual-wrapper">
+              <h2>Students</h2>
               <div className="data-container" style={{ position: 'static' }}>
-                <h2>Students</h2>
-
                 {selectedCourse.students.length === 0 ? (
                   <p>No students enrolled yet.</p>
                 ) : (
@@ -261,6 +362,7 @@ function TeacherPage() {
         )}
       </div>
 
+      {/* STUDENTS FORM */}
       <Dialog
           open={studentDialogOpen}
           onClose={handleStudentDialogClose}
@@ -280,6 +382,7 @@ function TeacherPage() {
               fullWidth
               variant="standard"
               value={selectedCourse?.name || ''}
+              readOnly
             />
             <TextField
               autoFocus
@@ -306,7 +409,84 @@ function TeacherPage() {
             <Button onClick={handleStudentDialogClose}>Cancel</Button>
             <Button type="submit">Add</Button>
           </DialogActions>
+      </Dialog>
+
+      {/* ASSIGNMENT FORM */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Dialog
+          open={assignmentDialogOpen}
+          onClose={handleAssignmentDialogClose}
+          slotProps={{
+            paper: {
+              component: 'form',
+              onSubmit: handleAssignmentFormSubmit,
+              className: 'custom-dialog'
+            },
+          }}
+        >
+          <DialogTitle>Add Assignment</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Course"
+              fullWidth
+              variant="standard"
+              value={selectedCourse?.name || ''}
+              readOnly
+            />
+
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Assignment Title"
+              fullWidth
+              variant="standard"
+              value={assignmentTitle}
+              onChange={(e) => setAssignmentTitle(e.target.value)}
+            />
+
+            <DatePicker
+              label="Start Date"
+              value={assignmentStartDate}
+              onChange={(newValue) => setAssignmentStartDate(newValue)}
+              slotProps={{
+                textField: {
+                  margin: 'dense',
+                  variant: 'standard',
+                  fullWidth: true,
+                  required: true,
+                  inputProps: {
+                    readOnly: true
+                  },
+                },
+              }}
+            />
+
+            <DatePicker
+              label="Due Date"
+              value={assignmentEndDate}
+              onChange={(newValue) => setAssignmentEndDate(newValue)}
+              slotProps={{
+                textField: {
+                  margin: 'dense',
+                  variant: 'standard',
+                  fullWidth: true,
+                  required: true,
+                  inputProps: {
+                    readOnly: true
+                  },
+                },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleAssignmentDialogClose}>Cancel</Button>
+            <Button type="submit">Add</Button>
+          </DialogActions>
         </Dialog>
+      </LocalizationProvider>
+
     </div>
   );
 }
