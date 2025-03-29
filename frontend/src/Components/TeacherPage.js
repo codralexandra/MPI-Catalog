@@ -13,6 +13,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
@@ -35,8 +38,8 @@ function TeacherPage() {
 
   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
   const [assignmentTitle, setAssignmentTitle] = useState('');
-  const [assignmentStartDate, setAssignmentStartDate] = useState('');
-  const [assignmentEndDate, setAssignmentEndDate] = useState('');
+  const [assignmentStartDate, setAssignmentStartDate] = useState(null);
+  const [assignmentEndDate, setAssignmentEndDate] = useState(null);
 
   const handleStudentDialogOpen = () => {
     setStudentDialogOpen(true);
@@ -55,12 +58,16 @@ function TeacherPage() {
   const handleAssignmentDialogClose = () => {
     setAssignmentDialogOpen(false);
     setAssignmentTitle('');
-    setAssignmentStartDate('');
-    setAssignmentEndDate('');
+    setAssignmentStartDate(null);
+    setAssignmentEndDate(null);
   };
 
   const handleAssignmentFormSubmit = (event) => {
     event.preventDefault();
+    const formattedStartDate = dayjs(assignmentStartDate).format('DD.MM.YYYY');
+    const formattedEndDate = dayjs(assignmentEndDate).format('DD.MM.YYYY');
+    console.log('Assignment Start Date:', formattedStartDate);
+    console.log('Assignment End Date:', formattedEndDate);
     handleAssignmentDialogClose();
   }
 
@@ -261,7 +268,7 @@ function TeacherPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '30px', marginTop: '10px' }}>
-                <button className="add-button">+ Add Assignment</button>
+                <button className="add-button" onClick={handleAssignmentDialogOpen}>+ Add Assignment</button>
                 {selectedAssignmentId && (
                 <button className="add-button">Delete</button>
                 )}
@@ -308,6 +315,7 @@ function TeacherPage() {
         )}
       </div>
 
+      {/* STUDENTS FORM */}
       <Dialog
           open={studentDialogOpen}
           onClose={handleStudentDialogClose}
@@ -353,7 +361,78 @@ function TeacherPage() {
             <Button onClick={handleStudentDialogClose}>Cancel</Button>
             <Button type="submit">Add</Button>
           </DialogActions>
+      </Dialog>
+
+      {/* ASSIGNMENT FORM */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Dialog
+          open={assignmentDialogOpen}
+          onClose={handleAssignmentDialogClose}
+          slotProps={{
+            paper: {
+              component: 'form',
+              onSubmit: handleAssignmentFormSubmit,
+              className: 'custom-dialog'
+            },
+          }}
+        >
+          <DialogTitle>Add Assignment</DialogTitle>
+          <DialogContent>
+            <TextField
+              margin="dense"
+              label="Course"
+              fullWidth
+              variant="standard"
+              value={selectedCourse?.name || ''}
+              InputProps={{ readOnly: true }}
+            />
+
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="Assignment Title"
+              fullWidth
+              variant="standard"
+              value={assignmentTitle}
+              onChange={(e) => setAssignmentTitle(e.target.value)}
+            />
+
+            <DatePicker
+              label="Start Date"
+              value={assignmentStartDate}
+              onChange={(newValue) => setAssignmentStartDate(newValue)}
+              slotProps={{
+                textField: {
+                  margin: 'dense',
+                  variant: 'standard',
+                  fullWidth: true,
+                  required: true,
+                },
+              }}
+            />
+
+            <DatePicker
+              label="Due Date"
+              value={assignmentEndDate}
+              onChange={(newValue) => setAssignmentEndDate(newValue)}
+              slotProps={{
+                textField: {
+                  margin: 'dense',
+                  variant: 'standard',
+                  fullWidth: true,
+                  required: true,
+                },
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleAssignmentDialogClose}>Cancel</Button>
+            <Button type="submit">Add</Button>
+          </DialogActions>
         </Dialog>
+      </LocalizationProvider>
+
     </div>
   );
 }
