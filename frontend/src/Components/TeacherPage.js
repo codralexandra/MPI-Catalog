@@ -22,6 +22,7 @@ const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
 const STUDENTS_FOR_COURSE_URL = "/course/teacher/get-students";
 const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
 const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
+const ADD_ASSIGNMENT_TO_COURSE_URL = "/course/teacher/add-assignment";
 
 function TeacherPage() {
   const location = useLocation();
@@ -41,15 +42,6 @@ function TeacherPage() {
   const [assignmentStartDate, setAssignmentStartDate] = useState(null);
   const [assignmentEndDate, setAssignmentEndDate] = useState(null);
 
-  const handleStudentDialogOpen = () => {
-    setStudentDialogOpen(true);
-  }
-
-  const handleStudentDialogClose = () => {
-    setStudentDialogOpen(false);
-    setStudentFirstName('');
-    setStudentLastName('');
-  };
 
   const handleAssignmentDialogOpen = () => {
     setAssignmentDialogOpen(true);
@@ -64,12 +56,54 @@ function TeacherPage() {
 
   const handleAssignmentFormSubmit = (event) => {
     event.preventDefault();
-    const formattedStartDate = dayjs(assignmentStartDate).format('DD.MM.YYYY');
-    const formattedEndDate = dayjs(assignmentEndDate).format('DD.MM.YYYY');
-    console.log('Assignment Start Date:', formattedStartDate);
-    console.log('Assignment End Date:', formattedEndDate);
+    if (!selectedCourse || !assignmentTitle.trim() || !assignmentStartDate || !assignmentEndDate) return;
+
+    const addAssignment = async () => {
+      try{
+        const formattedStartDate = dayjs(assignmentStartDate).format('DD.MM.YYYY');
+        const formattedEndDate = dayjs(assignmentEndDate).format('DD.MM.YYYY');
+
+        const addAssignmentForm = new URLSearchParams();
+        addAssignmentForm.append('course_id', selectedCourse.id);
+        addAssignmentForm.append('title', assignmentTitle);
+        addAssignmentForm.append('date_start', formattedStartDate);
+        addAssignmentForm.append('date_end', formattedEndDate);
+        const assignmentRes = await axiosClient.post(ADD_ASSIGNMENT_TO_COURSE_URL, addAssignmentForm);
+
+        const assignmentData = assignmentRes.data;  
+        const newAssignment = new Assignment(assignmentData.id, assignmentTitle, formattedStartDate, formattedEndDate);
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          assignments: [...prevCourse.assignments, newAssignment],
+        }));
+
+      }
+      catch(error){
+        console.error('Error adding assignment:', error);
+        alert('Something went wrong while adding the assignment.');
+      }
+
+      
+    }
+    
+
+    addAssignment();
     handleAssignmentDialogClose();
   }
+
+  const handleAssignmentClick = (assignment) => {
+    setSelectedAssignmentId(assignment.id);
+  };
+
+  const handleStudentDialogOpen = () => {
+    setStudentDialogOpen(true);
+  }
+
+  const handleStudentDialogClose = () => {
+    setStudentDialogOpen(false);
+    setStudentFirstName('');
+    setStudentLastName('');
+  };
 
   const handleStudentFormSubmit = (event) => {
     event.preventDefault();
@@ -100,6 +134,37 @@ function TeacherPage() {
     handleStudentDialogClose();
   };
 
+  const handleStudentClick = (student) => {
+    setSelectedStudentId(student.id);
+  };
+
+  const handleRemoveStudent = () => {
+    const removeStudent = async () => {
+      try {
+        const removeStudentForm = new URLSearchParams();
+        removeStudentForm.append('course_id', selectedCourse.id);
+        removeStudentForm.append('student_id', selectedStudentId);
+        console.log('Remove student from course:',selectedCourse.id);
+        console.log('Remove student form:', selectedStudentId);
+        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
+        
+        console.log('Remove student response:', studentRes.data);
+
+        setSelectedCourse((prevCourse) => ({
+          ...prevCourse,
+          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
+        }));
+        
+      }
+      catch (error) {
+        console.error('Error removing student:', error);
+        alert('Something went wrong while removing the student.');
+      }
+    }
+    removeStudent();
+  }
+
+
   useEffect(() => {
     const loadCourses = async () => {
       if (!teacher_id) return;
@@ -128,7 +193,8 @@ function TeacherPage() {
     setSelectedCourse(course);
     
     const updatedCourse = { ...course, assignments: [], students: [] };
-  
+
+    {/*GET ASSIGNMENTS FOR SELECTED COURSE*/}
     try {
       const assignmentForm = new URLSearchParams();
       assignmentForm.append('course_id', course.id);
@@ -143,7 +209,7 @@ function TeacherPage() {
       console.error(`Failed to load assignments for course ${course.id}`, error);
       updatedCourse.assignments = [];
     }
-  
+    {/*GET STUDENTS FOR SELECTED COURSE*/}
     try {
       const studentForm = new URLSearchParams();
       studentForm.append('course_id', course.id);
@@ -167,40 +233,6 @@ function TeacherPage() {
     setSelectedStudentId(null);
     setSelectedAssignmentId(null);
   };  
-
-  const handleStudentClick = (student) => {
-    setSelectedStudentId(student.id);
-  };
-
-  const handleAssignmentClick = (assignment) => {
-    setSelectedAssignmentId(assignment.id);
-  };
-
-  const handleRemoveStudent = () => {
-    const removeStudent = async () => {
-      try {
-        const removeStudentForm = new URLSearchParams();
-        removeStudentForm.append('course_id', selectedCourse.id);
-        removeStudentForm.append('student_id', selectedStudentId);
-        console.log('Remove student from course:',selectedCourse.id);
-        console.log('Remove student form:', selectedStudentId);
-        const studentRes = await axiosClient.post(REMOVE_STUDENT_FROM_COURSE_URL, removeStudentForm);
-        
-        console.log('Remove student response:', studentRes.data);
-
-        setSelectedCourse((prevCourse) => ({
-          ...prevCourse,
-          students: prevCourse.students.filter((s) => s.id !== selectedStudentId),
-        }));
-        
-      }
-      catch (error) {
-        console.error('Error removing student:', error);
-        alert('Something went wrong while removing the student.');
-      }
-    }
-    removeStudent();
-  }
 
   return (
     <div>
@@ -260,7 +292,7 @@ function TeacherPage() {
                       {assignment.title} <br></br> 
                       <div className="data-button-subtext">
                         Opens on: {assignment.start_date}<br></br> 
-                        Due date:{assignment.end_date}
+                        Due date: {assignment.end_date}
                       </div>
                     </button>
                   ))
@@ -384,7 +416,6 @@ function TeacherPage() {
               fullWidth
               variant="standard"
               value={selectedCourse?.name || ''}
-              InputProps={{ readOnly: true }}
             />
 
             <TextField
