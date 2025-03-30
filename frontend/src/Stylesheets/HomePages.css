@@ -127,6 +127,24 @@ h2{
     background-color: var(--additional-containter-button-clicked);
 }
 
+.grade-add-button {
+    margin-top: 15px;
+    padding: 12px 24px;
+    font-size: 20px;
+    font-family: 'Poppins';
+    font-weight: 500;
+    background-color: var(--register-form-button);
+    color: var(--button-text);
+    border-color: var(--main-text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.grade-add-button:hover {
+    background-color: var(--register-form-button-hover);
+}
+
 .custom-dialog{
 border-radius: 3; 
 font-family: 'Poppins';
@@ -169,6 +187,16 @@ background-color: var(--register-form-button-hover);
 
 .custom-dialog .MuiButton-root:active {
 background-color: var(--register-form-button-click);
+}
+
+.custom-dialog .MuiInputLabel-root {
+    margin-bottom:5px;
+}
+
+.custom-dialog .MuiMenuItem-root {
+    background-color: var(--register-form-button);
+    margin:5px;
+    padding:5px;
 }
 
 @media (max-width: 600px) {

@@ -13,9 +13,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const COURSES_FOR_TEACHER_URL = "/course/teacher/get";
 const ASSIGNMENTS_FOR_COURSE_URL = "/course/teacher/get-assignments";
@@ -34,15 +40,22 @@ function TeacherPage() {
   const [selectedAssignmentId, setSelectedAssignmentId] = useState(null);
 
   const [courses, setCourses] = useState([]);
-  const [studentDialogOpen, setStudentDialogOpen] = useState(false);
-  const [studentFirstName, setStudentFirstName] = useState('');
-  const [studentLastName, setStudentLastName] = useState('');
 
   const [assignmentDialogOpen, setAssignmentDialogOpen] = useState(false);
   const [assignmentTitle, setAssignmentTitle] = useState('');
   const [assignmentStartDate, setAssignmentStartDate] = useState(null);
   const [assignmentEndDate, setAssignmentEndDate] = useState(null);
 
+  const [studentDialogOpen, setStudentDialogOpen] = useState(false);
+  const [studentFirstName, setStudentFirstName] = useState('');
+  const [studentLastName, setStudentLastName] = useState('');
+
+  const [gradeDialogOpen, setGradeDialogOpen] = useState(false);
+  const [gradeAssignmentId, setGradeAssignmentId] = useState(null);
+  const [gradeStudentId, setGradeStudentId] = useState(null);
+  const [gradeValue, setGradeValue] = useState('');
+  const GradeValues = ["None", ...Array.from({ length: 10 }, (_, i) => (i + 1).toString())];
+  
   {/*HANDLE ASSIGNMENT DATA*/}
   const handleAssignmentDialogOpen = () => {
     setAssignmentDialogOpen(true);
@@ -179,6 +192,25 @@ function TeacherPage() {
     removeStudent();
   }
 
+  {/*HANDLE GRADE DATA*/}
+
+  const handleGradeDialogOpen = () => {  
+    setGradeDialogOpen(true);
+  }
+
+  const handleGradeDialogClose = () => {
+    setGradeDialogOpen(false);
+    setGradeAssignmentId(null);
+    setGradeStudentId(null);
+    setGradeValue('');
+  }
+
+  const handleGradeFormSubmit = (event) => {
+    event.preventDefault();
+    
+    handleGradeDialogClose();
+  }
+
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -275,10 +307,14 @@ function TeacherPage() {
                 </button>
               ))}
             </div>
-              
+             
             {selectedCourse && (
-              <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student to {selectedCourse.name}</button>
+              <div style={{ display: 'flex', gap: '30px', marginTop: '10px' }}>
+                  <button className="add-button"  onClick={handleStudentDialogOpen}>+ Add Student to {selectedCourse.name}</button>
+                  <button className="grade-add-button" onClick={handleGradeDialogOpen}>MANAGE GRADES for {selectedCourse.name} </button>
+              </div>
             )}
+
 
         </div>
         
@@ -486,6 +522,79 @@ function TeacherPage() {
           </DialogActions>
         </Dialog>
       </LocalizationProvider>
+
+      {/* GRADE MANAGEMENT FORM */}
+      <Dialog
+        open={gradeDialogOpen}
+        onClose={handleGradeDialogClose}
+        slotProps={{
+          paper:{
+          component: 'form',
+          onSubmit: handleGradeFormSubmit,
+          className: 'custom-dialog',
+          },
+        }}
+       >
+        <DialogTitle>Manage Grades for {selectedCourse?.name}</DialogTitle>
+        <DialogContent>
+          {/* Assignment Dropdown */}
+          <FormControl fullWidth margin="dense" variant="standard">
+            <InputLabel id="assignment-label">Assignment</InputLabel>
+            <Select
+              labelId="assignment-label"
+              value={gradeAssignmentId || ''}
+              onChange={(e) => setGradeAssignmentId(e.target.value)}
+              required
+            >
+              {selectedCourse?.assignments?.map((assignment) => (
+                <MenuItem key={assignment.id} value={assignment.id}>
+                  {assignment.title}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Student Dropdown */}
+          <FormControl fullWidth margin="dense" variant="standard">
+            <InputLabel id="student-label">Student</InputLabel>
+            <Select
+              labelId="student-label"
+              value={gradeStudentId || ''}
+              onChange={(e) => setGradeStudentId(e.target.value)}
+              required
+            >
+              {selectedCourse?.students?.map((student) => (
+                <MenuItem key={student.id} value={student.id}>
+                  {student.first_name} {student.last_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Grade Dropdown */}
+          <FormControl fullWidth margin="dense" variant="standard">
+            <InputLabel id="grade-label">Grade</InputLabel>
+            <Select
+              labelId="grade-label"
+              value={gradeValue}
+              onChange={(e) => setGradeValue(e.target.value)}
+              required
+            >
+              {GradeValues.map((val) => (
+                <MenuItem key={val} value={val}>
+                  {val}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleGradeDialogClose}>Cancel</Button>
+          <Button type="submit">Save</Button>
+        </DialogActions>
+      </Dialog>
+
 
     </div>
   );
