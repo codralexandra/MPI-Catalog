@@ -30,6 +30,7 @@ const ADD_STUDENT_TO_COURSE_URL = "/course/teacher/add-student";
 const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
 const ADD_ASSIGNMENT_TO_COURSE_URL = "/course/teacher/add-assignment";
 const REMOVE_ASSIGNMENT_FROM_COURSE_URL = "/course/teacher/remove-assignment";
+const ADD_GRADE_TO_ASSIGNMENT_URL = "/grade/post";
 
 function TeacherPage() {
   const location = useLocation();
@@ -52,7 +53,7 @@ function TeacherPage() {
 
   const [gradeDialogOpen, setGradeDialogOpen] = useState(false);
   const [gradeAssignmentId, setGradeAssignmentId] = useState(null);
-  const [gradeStudentId, setGradeStudentId] = useState(null);
+  const [gradeStudentId, setGradeStudentId] = useState('');
   const [gradeValue, setGradeValue] = useState('');
   const GradeValues = ["None", ...Array.from({ length: 10 }, (_, i) => (i + 1).toString())];
   
@@ -207,9 +208,27 @@ function TeacherPage() {
 
   const handleGradeFormSubmit = (event) => {
     event.preventDefault();
-    
+    if (!gradeAssignmentId || !gradeStudentId || !gradeValue) return;
+  
+    const addGrade = async () => {
+      try {
+        const addGradeForm = new URLSearchParams();
+        addGradeForm.append('assignment_ids', [gradeAssignmentId]);
+        addGradeForm.append('student_ids', [gradeStudentId]);
+        addGradeForm.append('scores', [gradeValue]);
+  
+        await axiosClient.post(ADD_GRADE_TO_ASSIGNMENT_URL, addGradeForm);
+  
+        alert('Grade added successfully!');
+      } catch (error) {
+        console.error('Error adding grade:', error);
+        alert('Something went wrong while adding the grade.');
+      }
+    };
+  
+    addGrade();
     handleGradeDialogClose();
-  }
+  };
 
 
   useEffect(() => {
