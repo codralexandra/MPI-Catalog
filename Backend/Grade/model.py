@@ -15,7 +15,7 @@ class GradeModel():
         return {
             'student_id': self.student_id,
             'assignment_id': self.assignment_id,
-            'grade': self.score,
+            'score': self.score,
             'date': self.date,
         }
     

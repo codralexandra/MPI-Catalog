@@ -82,7 +82,7 @@ def add_assignment():
         return message, code
     student_ids = message
     for student_id in student_ids:
-        result = requests.post(grade_url, data={'student_id': student_id, 'assignment_id': assignemnt_id, 'grade': None})
+        result = requests.post(grade_url, data={'student_id': student_id, 'assignment_id': assignemnt_id, 'score': 0})
         if result.status_code != 200:
             return f'Grade could not be created for Student {student_id}', 404
 
@@ -159,7 +159,18 @@ def add_student():
     message, code =  Course.add_student(student_id)
     if code!= 200:
         return message, code
-    return student_id, 200
+    
+    #Add Grades for each assignment
+    grade_url = url_for('grade.post', _external=True)
+    message, code = Course.get_assignments()
+    if code != 200:
+        return message, code
+    assignment_ids = message
+    for assignment_id in assignment_ids:
+        result = requests.post(grade_url, data={'student_id': student_id, 'assignment_id': assignment_id, 'score': 0})
+        if result.status_code != 200:
+            return f'Grade could not be created for Assignment {assignment_id}. Error code: {result.text}', 404
+    return 'Student Added Successfully', 200
 
 
 """"
