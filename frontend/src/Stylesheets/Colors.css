@@ -1,6 +1,8 @@
 :root {
     --page-background: #f5e7df;
+    --page-background-50: #f5e7df86;
     --register-forms-background: #c47f6a;
+    --register-forms-background-50: #c47f6a80;
     --register-form-button: #621d15;
     --register-form-button-hover: #82261d;
     --register-form-button-click: #c33d15;
