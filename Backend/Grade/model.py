@@ -4,24 +4,27 @@ from db_utils import db_database
 
 collection = db_database.get_collection('Grade')
 class GradeModel():
-    def __init__(self, _id=None, student_id=None, assignment_id=None, grade=None):
+    def __init__(self, _id=None, student_id=None, assignment_id=None, score=None,date=None):
         self.student_id:str = student_id
         self.assignment_id:str = assignment_id
-        self.grade:int = grade
+        self.score:int = score
+        self.date:str = date
         self._id:ObjectId = _id
         
     def to_dict(self):
         return {
             'student_id': self.student_id,
             'assignment_id': self.assignment_id,
-            'grade': self.grade,
+            'grade': self.score,
+            'date': self.date,
         }
     
     def to_grade(self):
         return GradeModel(
             student_id=self.student_id,
             assignment_id=self.assignment_id,
-            grade=self.grade,
+            score=self.score,
+            date=self.date,
         )
     
 
