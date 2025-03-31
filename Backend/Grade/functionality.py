@@ -40,7 +40,6 @@ class GradeResource(Resource):
             grade = GradeModel(student_id=student_id, assignment_id=assignment_id, score=score, date=date)
             result = grade.find()
             if result:
-                print("Grade Found")
                 result = grade.update()
             else: result = grade.save()
             if not result:

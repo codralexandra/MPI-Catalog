@@ -41,6 +41,5 @@ class GradeModel():
             {'student_id': self.student_id, 'assignment_id': self.assignment_id},
             {'$set': {'score': self.score, 'date': self.date}}
         )
-        print(result)
         return result if result else None
     
