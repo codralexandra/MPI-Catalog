@@ -195,7 +195,7 @@ def remove_student():
     if code != 200:
         return message, code
     assignemnt_ids = message
-    student_ids = [request.form.get('student_ids')] * len(assignemnt_ids)
+    student_ids = [request.form.get('student_id')] * len(assignemnt_ids)
     scores = [0] * len(assignemnt_ids)
     result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignemnt_ids, 'scores': scores})
     if result.status_code != 200:
