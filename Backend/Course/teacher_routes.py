@@ -81,12 +81,13 @@ def add_assignment():
     if code != 200:
         return message, code
     student_ids = message
-    for student_id in student_ids:
-        result = requests.post(grade_url, data={'student_id': student_id, 'assignment_id': assignemnt_id, 'score': 0})
-        if result.status_code != 200:
-            return f'Grade could not be created for Student {student_id}', 404
-
-    return assignemnt_id, 200
+    assignemnt_ids = [request.form.get('assignment_id')] * len(student_ids)
+    scores = [0] * len(student_ids)
+    result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignemnt_ids, 'scores': scores})
+    if result.status_code != 200:
+        return f'Grade could not be added. Error code {result.text}', 404
+    
+    return 'Assignment Removed Successfully', 200
 
 """
 /remove-assignment:
@@ -107,16 +108,17 @@ def remove_assignment():
     if code != 200:
         return message, code
     
-    ##Remove the grades for the assignment
-    grade_url = url_for('grade.delete', _external=True)
+    #Remove the grades for the assignment
+    grade_url = url_for('grade.post', _external=True)
     message, code = Course.get_students()
     if code != 200:
         return message, code
     student_ids = message
-    for student_id in student_ids:
-        result = requests.delete(grade_url, data={'student_id': student_id, 'assignment_id': request.form.get('assignment_id')})
-        if result.status_code != 200:
-            return f'Grade could not be deleted for Student {student_id}', 404
+    assignemnt_ids = [request.form.get('assignment_id')] * len(student_ids)
+    scores = [0] * len(student_ids)
+    result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignemnt_ids, 'scores': scores})
+    if result.status_code != 200:
+        return f'Grade could not be deleted. Error code {result.text}', 404
     
     return 'Assignment Removed Successfully', 200
 
@@ -166,10 +168,12 @@ def add_student():
     if code != 200:
         return message, code
     assignment_ids = message
-    for assignment_id in assignment_ids:
-        result = requests.post(grade_url, data={'student_id': student_id, 'assignment_id': assignment_id, 'score': 0})
-        if result.status_code != 200:
-            return f'Grade could not be created for Assignment {assignment_id}. Error code: {result.text}', 404
+    student_ids = [student_id] * len(assignment_ids)
+    scores = [0] * len(assignment_ids)
+    result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignment_ids, 'scores': scores})
+    if result.status_code != 200:
+        return f'Grade could not be created. Error code: {result.text}', 404
+    
     return 'Student Added Successfully', 200
 
 
@@ -181,7 +185,24 @@ def add_student():
 """
 @teacher_course_bp.route('/remove-student', methods=['POST'])
 def remove_student():
-    return Course.remove_student()
+    message,code= Course.remove_student()
+    if code != 200:
+        return message, code
+    
+    #Remove the grades for the assignment
+    grade_url = url_for('grade.post', _external=True)
+    message, code = Course.get_assignments()
+    if code != 200:
+        return message, code
+    assignemnt_ids = message
+    student_ids = [request.form.get('student_ids')] * len(assignemnt_ids)
+    scores = [0] * len(assignemnt_ids)
+    result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignemnt_ids, 'scores': scores})
+    if result.status_code != 200:
+        return f'Grade could not be deleted. Error code {result.text}', 404
+    
+    return 'Student Removed Successfully', 200
+
 
 
 # uwu only for testing again

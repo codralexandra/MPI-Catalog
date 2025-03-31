@@ -32,4 +32,15 @@ class GradeModel():
         result = collection.insert_one(self.to_dict())
         return result if result else None
 
+    def find(self):
+        result = collection.find_one({'student_id': self.student_id, 'assignment_id': self.assignment_id})
+        return result if result else None
+    
+    def update(self):
+        result = collection.update_one(
+            {'student_id': self.student_id, 'assignment_id': self.assignment_id},
+            {'$set': {'score': self.score, 'date': self.date}}
+        )
+        print(result)
+        return result if result else None
     

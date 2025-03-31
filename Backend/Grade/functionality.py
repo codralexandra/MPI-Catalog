@@ -7,22 +7,46 @@ from Grade.model import GradeModel
 
 class GradeResource(Resource):
     def post():
-        student_id = request.form.get('student_id')
-        assignment_id = request.form.get('assignment_id')
-        score = request.form.get('score')
+        student_ids = request.form.getlist('student_ids')
+        assignment_ids = request.form.getlist('assignment_ids')
+        scores = request.form.getlist('scores')
 
-        if not student_id or not assignment_id or not score:
-            return 'Student ID, Assignment ID And Grade Fields Cannot Be Empty', 400
+        if not student_ids or not assignment_ids or not scores:
+            return 'Student IDs, Assignment IDs And Grades Fields Cannot Be Empty', 400
+        if len(student_ids) != len(assignment_ids) or len(student_ids) != len(scores):
+            return 'Student ID, Assignment ID And Grade Fields Must Be The Same Length', 400
         
-        if score!=str(0):
-            score = int(score)
-            if not (1 <= score <= 100):
-                return 'Grade must be between 1 and 100', 400
-        score = None
-        date = datetime.now().strftime("%d.%m.%Y")
-        grade = GradeModel(student_id=student_id, assignment_id=assignment_id, score=score, date=date)
-        result = grade.save()
-        if not result:
-            return 'Grade Not Found', 404
-        return str(result.inserted_id), 200
+        num_of_grades = len(student_ids)
+        for i in range(num_of_grades):
+            student_id = student_ids[i]
+            assignment_id = assignment_ids[i]
+            score = scores[i]
+
+            if not student_id or not assignment_id or not score:
+                return 'Student ID, Assignment ID And Grade Fields Cannot Be Empty', 400
+            
+            if not ObjectId.is_valid(student_id):
+                return 'Invalid Student ID', 400
+            
+            if not ObjectId.is_valid(assignment_id):
+                return 'Invalid Assignment ID', 400
+
+            if score!=str(0):
+                score = int(score)
+                if not (1 <= score <= 100):
+                    return 'Grade must be between 1 and 100', 400
+            else: score = 0
+            date = datetime.now().strftime("%d.%m.%Y")
+            grade = GradeModel(student_id=student_id, assignment_id=assignment_id, score=score, date=date)
+            result = grade.find()
+            if result:
+                print("Grade Found")
+                result = grade.update()
+            else: result = grade.save()
+            if not result:
+                return 'Grade Not Found', 404
+            
+        return "Grades Added Succesfully", 200
+
+       
         
