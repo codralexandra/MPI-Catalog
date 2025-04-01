@@ -19,6 +19,7 @@ def post():
     - Request Body: Expects 'assignment_id'.
     - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
 """
+
 @teacher_assignment_bp.route('/get', methods = ['POST'])
 def get():
     return Assignment.get()

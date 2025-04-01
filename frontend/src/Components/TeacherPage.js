@@ -85,8 +85,8 @@ function TeacherPage() {
         addAssignmentForm.append('date_end', formattedEndDate);
         const assignmentRes = await axiosClient.post(ADD_ASSIGNMENT_TO_COURSE_URL, addAssignmentForm);
 
-        const assignmentData = assignmentRes.data;  
-        const newAssignment = new Assignment(assignmentData.id, assignmentTitle, formattedStartDate, formattedEndDate);
+        const assignmentId = assignmentRes.data;  
+        const newAssignment = new Assignment(assignmentId, assignmentTitle, formattedStartDate, formattedEndDate);
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
           assignments: [...prevCourse.assignments, newAssignment],
@@ -150,8 +150,8 @@ function TeacherPage() {
         addStudentForm.append('first_name', studentFirstName);
         const studentRes = await axiosClient.post(ADD_STUDENT_TO_COURSE_URL, addStudentForm);
       
-        const studentData = studentRes.data;
-        const newStudent = new Student(studentData.id, studentFirstName, studentLastName);
+        const studentId = studentRes.data;
+        const newStudent = new Student(studentId, studentFirstName, studentLastName);
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
           students: [...prevCourse.students, newStudent],

@@ -1,5 +1,7 @@
 from flask_restful import Resource,request
+
 from Student.model import StudentModel
+
 
 class Student(Resource):
     def post():
@@ -9,26 +11,28 @@ class Student(Resource):
             return 'First Name and Second Name Fields Cannot Be Empty', 400
         
         student = StudentModel(first_name=first_name, last_name=last_name)
-        message, code = student.save()
-        if code == 400:
-            return message, code
-        return str(message), code
+        result = student.save()
+        if result is None:
+            return 'Student Not Added', 400
+        return str(result.inserted_id), 200
     
     def get_bulk_info():
         student_ids = request.form.getlist('student_ids')
         students:list['StudentModel'] = []
         if not student_ids:
             return 'No Student ID Provided', 400
+        
         for student_id in student_ids:
             if not student_id:
                 continue
             student = StudentModel(_id=student_id)
-            student = student.get()
-            if not student:
+            result = student.get()
+            if not result:
                 continue
+            student = StudentModel.to_student(result)
+            student = student.__dict__()
+            student['id'] = str(student_id)
             students.append(student)
-
-        students = [student.to_dict() for student in students]
         return students, 200
     
     def delete():
@@ -36,12 +40,11 @@ class Student(Resource):
         if not student_id:
             return 'Student ID Field Cannot Be Empty', 400
         student = StudentModel(_id=student_id)
-        code = student.delete()
-        if code == 404:
+        result = student.delete()
+        if result is None:
             return 'Student Not Found', 404
         return 'Student Deleted', 200
     
-
     def get_id():
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
@@ -52,7 +55,7 @@ class Student(Resource):
             return 'First Name and Last Name Fields Cannot Be Empty', 400
         
         student = StudentModel(first_name=first_name, last_name=last_name)
-        student_id = student.get_id()
-        if not student_id:
+        result = student.get_id()
+        if not result:
             return 'Student Not Found', 404
-        return student_id, 200
+        return str(result['_id']), 200

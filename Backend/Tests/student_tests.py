@@ -41,6 +41,7 @@ class StudentTests(unittest.TestCase):
         response = self.client.post('/student/get-bulk-info', data={
             'student_ids': [student_id]
         })
+        print(student_id)
         
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data.decode('utf-8'))

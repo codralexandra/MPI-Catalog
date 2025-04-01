@@ -80,14 +80,16 @@ def add_assignment():
     message,code = Course.get_students()
     if code != 200:
         return message, code
+    if not message:
+        return 'Assignment Removed Successfully', 200
     student_ids = message
-    assignemnt_ids = [request.form.get('assignment_id')] * len(student_ids)
+    assignemnt_ids = [assignemnt_id] * len(student_ids)
     scores = [0] * len(student_ids)
     result = requests.post(grade_url, data={'student_ids': student_ids, 'assignment_ids': assignemnt_ids, 'scores': scores})
     if result.status_code != 200:
         return f'Grade could not be added. Error code {result.text}', 404
     
-    return 'Assignment Removed Successfully', 200
+    return assignemnt_id, 200
 
 """
 /remove-assignment:
@@ -121,8 +123,6 @@ def remove_assignment():
         return f'Grade could not be deleted. Error code {result.text}', 404
     
     return 'Assignment Removed Successfully', 200
-
-
     
 
 """
@@ -174,7 +174,7 @@ def add_student():
     if result.status_code != 200:
         return f'Grade could not be created. Error code: {result.text}', 404
     
-    return 'Student Added Successfully', 200
+    return student_id, 200
 
 
 """"
@@ -202,7 +202,6 @@ def remove_student():
         return f'Grade could not be deleted. Error code {result.text}', 404
     
     return 'Student Removed Successfully', 200
-
 
 
 # uwu only for testing again
