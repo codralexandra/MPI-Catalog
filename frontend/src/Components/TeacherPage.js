@@ -56,6 +56,8 @@ function TeacherPage() {
   const [gradeStudentId, setGradeStudentId] = useState('');
   const [gradeValue, setGradeValue] = useState('');
   const GradeValues = ["None", ...Array.from({ length: 10 }, (_, i) => (i + 1).toString())];
+  const [isBulkMode, setIsBulkMode] = useState(false);
+  const [bulkGrades, setBulkGrades] = useState([]);
   
   {/*HANDLE ASSIGNMENT DATA*/}
   const handleAssignmentDialogOpen = () => {
@@ -204,30 +206,57 @@ function TeacherPage() {
     setGradeAssignmentId(null);
     setGradeStudentId(null);
     setGradeValue('');
+    setIsBulkMode(false);
+    setBulkGrades([]);
   }
 
   const handleGradeFormSubmit = (event) => {
     event.preventDefault();
-    if (!gradeAssignmentId || !gradeStudentId || !gradeValue) return;
-  
+    
     const addGrade = async () => {
       try {
-        const addGradeForm = new URLSearchParams();
-        addGradeForm.append('assignment_ids', [gradeAssignmentId]);
-        addGradeForm.append('student_ids', [gradeStudentId]);
-        addGradeForm.append('scores', [gradeValue]);
-  
-        await axiosClient.post(ADD_GRADE_TO_ASSIGNMENT_URL, addGradeForm);
-  
-        alert('Grade added successfully!');
+        if (isBulkMode) {
+          if (bulkGrades.length === 0) {
+            alert('Please add at least one grade to submit.');
+            return;
+          }
+          const assignmentIds = bulkGrades.map(g => g.assignmentId);
+          const studentIds = bulkGrades.map(g => g.studentId);
+          const scores = bulkGrades.map(g => g.grade);
+          
+          const addGradeForm = new URLSearchParams();
+          assignmentIds.forEach(id => addGradeForm.append('assignment_ids', id));
+          studentIds.forEach(id => addGradeForm.append('student_ids', id));
+          scores.forEach(score => addGradeForm.append('scores', score));
+
+          console.log(addGradeForm);
+          
+          await axiosClient.post(ADD_GRADE_TO_ASSIGNMENT_URL, addGradeForm);
+          alert(`${bulkGrades.length} grades added successfully!`);
+        } else {
+          if (!gradeAssignmentId || !gradeStudentId || !gradeValue) {
+            alert('Please fill out all grade fields.');
+            return;
+          }
+          
+          const addGradeForm = new URLSearchParams();
+          addGradeForm.append('assignment_ids', [gradeAssignmentId]);
+          addGradeForm.append('student_ids', [gradeStudentId]);
+          addGradeForm.append('scores', [gradeValue]);
+
+          console.log(addGradeForm);
+          
+          await axiosClient.post(ADD_GRADE_TO_ASSIGNMENT_URL, addGradeForm);
+          alert('Grade added successfully!');
+        }
+        
+        handleGradeDialogClose();
       } catch (error) {
         console.error('Error adding grade:', error);
         alert('Something went wrong while adding the grade.');
       }
     };
-  
     addGrade();
-    handleGradeDialogClose();
   };
 
 
@@ -563,7 +592,7 @@ function TeacherPage() {
               labelId="assignment-label"
               value={gradeAssignmentId || ''}
               onChange={(e) => setGradeAssignmentId(e.target.value)}
-              required
+              //required
             >
               {selectedCourse?.assignments?.map((assignment) => (
                 <MenuItem key={assignment.id} value={assignment.id}>
@@ -580,7 +609,7 @@ function TeacherPage() {
               labelId="student-label"
               value={gradeStudentId || ''}
               onChange={(e) => setGradeStudentId(e.target.value)}
-              required
+              //required
             >
               {selectedCourse?.students?.map((student) => (
                 <MenuItem key={student.id} value={student.id}>
@@ -597,7 +626,7 @@ function TeacherPage() {
               labelId="grade-label"
               value={gradeValue}
               onChange={(e) => setGradeValue(e.target.value)}
-              required
+              //required
             >
               {GradeValues.map((val) => (
                 <MenuItem key={val} value={val}>
@@ -606,6 +635,87 @@ function TeacherPage() {
               ))}
             </Select>
           </FormControl>
+          <div className="bulk-grade-controls">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isBulkMode}
+                  onChange={(e) => setIsBulkMode(e.target.checked)}
+                />
+              }
+              label="Bulk Mode"
+            />
+
+            {isBulkMode && (
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (!gradeAssignmentId || !gradeStudentId || !gradeValue) {
+                    alert("Please select assignment, student, and grade.");
+                    return;
+                  }
+
+                  const alreadyExists = bulkGrades.some(
+                    (g) =>
+                      g.assignmentId === gradeAssignmentId &&
+                      g.studentId === gradeStudentId
+                  );
+
+                  if (alreadyExists) {
+                    setBulkGrades((prev) =>
+                      prev.map((g) =>
+                        g.assignmentId === gradeAssignmentId && g.studentId === gradeStudentId
+                          ? { ...g, grade: gradeValue }
+                          : g
+                      )
+                    );
+                  } else {
+                    setBulkGrades((prev) => [
+                      ...prev,
+                      {
+                        assignmentId: gradeAssignmentId,
+                        studentId: gradeStudentId,
+                        grade: gradeValue,
+                      },
+                    ]);
+                  }
+
+                  setGradeAssignmentId(null);
+                  setGradeStudentId(null);
+                  setGradeValue('');
+                }}
+              >
+                + Add Grade
+              </Button>
+            )}
+          </div>
+          {isBulkMode && bulkGrades.length > 0 && (
+              <div className="bulk-grade-table-wrapper">
+                <h4 style={{ fontFamily: 'Poppins', fontWeight: '600' }}>Grades to Upload:</h4>
+                <table className="bulk-grade-table">
+                  <thead>
+                    <tr>
+                      <th>Assignment</th>
+                      <th>Student</th>
+                      <th>Grade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bulkGrades.map((g, idx) => {
+                      const assignment = selectedCourse?.assignments?.find(a => a.id === g.assignmentId);
+                      const student = selectedCourse?.students?.find(s => s.id === g.studentId);
+                      return (
+                        <tr key={idx}>
+                          <td>{assignment?.title || `Assignment ${g.assignmentId}`}</td>
+                          <td>{student ? `${student.first_name} ${student.last_name}` : `Student ${g.studentId}`}</td>
+                          <td>{g.grade}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
         </DialogContent>
 
         <DialogActions>
