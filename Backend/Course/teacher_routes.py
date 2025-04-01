@@ -217,17 +217,11 @@ def get_student_average():
         return message, code
     assignment_ids = message
 
-    avg = 0
     grade_url = url_for('grade.get', _external=True)
-    for assignment_id in assignment_ids:
-        response = requests.get(grade_url, data={'student_id': request.form.get('student_id'), 'assignment_id': assignment_id})
-        if response.status_code != 200:
-            return 'Something Went Wrong', response.status_code
-        if not response.json():
-            return 'No Grades Found', 404
-        avg += int(response.json())
-    avg /= len(assignment_ids) 
-    return avg, 200
+    result =  requests.post(grade_url, data={'student_id': request.form.get('student_id'), 'assignment_ids': assignment_ids})
+    if result.status_code != 200:
+        return 'Grade Not Found', 404
+    return str(result.text),200
         
 
 # uwu only for testing again
