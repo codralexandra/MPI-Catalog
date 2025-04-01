@@ -199,6 +199,40 @@ background-color: var(--register-form-button-click);
     padding:5px;
 }
 
+.bulk-grade-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.bulk-grade-table-wrapper {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.bulk-grade-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins';
+    font-size: 18px;
+    background-color: var(--page-background-50);
+}
+
+.bulk-grade-table th,
+.bulk-grade-table td {
+    border: 1px solid var(--main-text);
+    padding: 10px;
+    text-align: left;
+}
+
+.bulk-grade-table thead {
+    background-color: var(--register-forms-background-50);
+}
+
+
 @media (max-width: 600px) {
     .app-bar {
         width: 70%;
