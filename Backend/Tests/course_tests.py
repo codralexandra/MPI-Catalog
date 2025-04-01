@@ -197,8 +197,8 @@ class TeacherCourseTests(unittest.TestCase):
             print("\n✅ Test - No Students Found")
 
     @patch("requests.post", side_effect=mock_get_student_id)
-    @patch("Course.model.CourseModel.add_student", side_effect=mock_add_student)
-    @patch("Course.model.CourseModel.remove_student", side_effect=mock_remove_student)
+    @patch("Course.model.CourseModel.add_entry", side_effect=mock_add_student)
+    @patch("Course.model.CourseModel.remove_entry", side_effect=mock_remove_student)
     def test_add_student(self, mock_remove_student, mock_add_student, mock_post):
         """Test adding and removing a student to/from a course."""
         course_id = '67e29e4c900069427cc4c358'

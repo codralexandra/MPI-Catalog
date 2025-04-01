@@ -1,135 +1,127 @@
 from flask_restful import Resource,request
 from Course.model import CourseModel
+from bson.objectid import ObjectId
 
 class Course(Resource):
     def post():
         teacher_id = request.form.get('teacher_id')
         course_name = request.form.get('course_name')
-
         if not teacher_id or not course_name:
             return 'Teacher ID and Course Name Fields Cannot Be Empty', 400
         
         course = CourseModel(teacher_id=teacher_id, course_name=course_name)
-        message, code = course.save()
-        if code == 400:
-            return message, code
-        return str(message), code
+        result = course.save()
+        if not result:
+            return 'Course Not Added', 400
+        return str(result.inserted_id), 200
     
-    # uwu only for testing again
     def delete():
-        """Delete a course by course_id."""
         course_id = request.form.get('course_id')
-
         if not course_id:
             return 'Course ID is required to delete a course', 400
-
-        course = CourseModel(course_name=None, teacher_id=None, students=None, assigments=None, id=course_id)
-
-        result, status_code = course.delete()
-
-        return result, status_code        
+        
+        course = CourseModel(_id=course_id)
+        result = course.delete()
+        if not result or result.deleted_count == 0:
+            return 'Course Not Found', 404
+        return f'Course with ID {course_id} deleted successfully', 200
 
 
     def get():
         teacher_id = request.form.get('teacher_id')
         if not teacher_id:
             return 'Teacher ID Field Cannot Be Empty', 400
-
-        coruseModel = CourseModel(None,teacher_id)
-        courseModels,code = coruseModel.get_all_with_specific_teacher()
         
-        if code != 200:
-            return 'Something Went Wrong', code
-        
+        courseModel = CourseModel(teacher_id=teacher_id)
+        result = courseModel.get_teacher_courses()
+        if not result:
+            return 'No Corses Found', 404
         courses = []
-        for course in courseModels:
-            course = course.to_id_name()
+        for course in result:
+            course:CourseModel = CourseModel.to_course(course)
+            course = course.essential_info()
             courses.append(course)
-
-        return courses, code
+        return courses, 200
     
-
     def get_one():
         course_id = request.form.get('course_id')
         if not course_id:
             return 'Course ID Field Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        course,code = aux.get_one()
-        
-        if not course:
+        course = CourseModel(_id=course_id)
+        result = course.get_one()
+        if not result:
             return 'Course Not Found', 404
-        
-
-        return course.to_id_name(), code
+        course:CourseModel = CourseModel.to_course(result)
+        return course.essential_info(), 200
     
-
     def get_students():
         course_id = request.form.get('course_id')
         if not course_id:
             return 'Course ID Field Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        students,code = aux.get_students()
-        
-        if not students:
-            return 'No Students Found', 404
-        
-        return students, code
+        course = CourseModel(_id=course_id)
+        result = course.get_one()
+        if not result:
+            return 'Course Not Found', 404
+        return result['students'], 200
     
     def get_assignments():
         course_id = request.form.get('course_id')
         if not course_id:
             return 'Course ID Field Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        assignments,code = aux.get_assignments()
-        
-        if not assignments:
-            return 'No Assignments Found', 404
-        
-        return assignments, code
-        
-    def remove_student():
-        course_id = request.form.get('course_id')
-        student_id = request.form.get('student_id')
-
-        if not course_id or not student_id:
-            return 'Course ID and Student ID Fields Cannot Be Empty', 400
-        
-        aux = CourseModel(None,None,id=course_id)
-        message,code = aux.remove_student(student_id)
-
-        return message, code
+        course = CourseModel(_id=course_id)
+        result = course.get_one()
+        if not result:
+            return 'Course Not Found', 404
+        return result['assignments'], 200
     
     def add_student(student_id):
         course_id = request.form.get('course_id')
-        if not student_id or not course_id:
-            return 'Student ID and Course ID Fields Cannot Be Empty', 400
+        if not course_id or not student_id:
+            return 'Course ID and Student ID Fields Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        message,code = aux.add_student(student_id)
-
-        return message, code
+        course = CourseModel(_id=course_id)
+        result = course.add_entry('student_id',student_id)
+        if not result:
+            return 'Student Not Added', 400
+        return 'Student Added Successfully', 200
+    
+    def remove_student():
+        course_id = request.form.get('course_id')
+        student_id = request.form.get('student_id')
+        if not course_id or not student_id:
+            return 'Course ID and Student ID Fields Cannot Be Empty', 400
+        
+        course = CourseModel(_id=course_id)
+        result = course.remove_entry('student_id',student_id)
+        if not result:
+            return 'Student Not Removed', 400
+        return 'Student Removed Successfully', 200
     
     def add_assignment(assignment_id):
         course_id = request.form.get('course_id')
-        if not assignment_id or not course_id:
-            return 'Assignment ID and Course ID Fields Cannot Be Empty', 400
+        if not course_id or not assignment_id:
+            return 'Course ID and Assignment ID Fields Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        message,code = aux.add_assignment(assignment_id)
-
-        return message, code
+        course = CourseModel(_id=course_id)
+        result = course.add_entry('assignment_id',assignment_id)
+        if not result:
+            return 'Assignment Not Added', 400
+        return 'Assignment Added Successfully', 200
     
     def remove_assignment():
         course_id = request.form.get('course_id')
         assignment_id = request.form.get('assignment_id')
-
         if not course_id or not assignment_id:
             return 'Course ID and Assignment ID Fields Cannot Be Empty', 400
         
-        aux = CourseModel(None,None,id=course_id)
-        message,code = aux.remove_assignment(assignment_id)
+        course = CourseModel(_id=course_id)
+        result = course.remove_entry('assignment_id',assignment_id)
+        if not result:
+            return 'Assignment Not Removed', 400
+        return 'Assignment Removed Successfully', 200
+    
 
-        return message, code
+

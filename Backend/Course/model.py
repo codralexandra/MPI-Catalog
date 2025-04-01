@@ -1,133 +1,73 @@
 from db_utils import db_database
 from bson.objectid import ObjectId
 
-class CourseModel():
-    def __init__(self, course_name, teacher_id, students=[], assigments=[], id=None):
-        self.collection = db_database.get_collection('Course')
+collection = db_database.get_collection('Course')
+class CourseModel:
+    def __init__(self, course_name=None, teacher_id=None, students=[], assignments=[], _id=None):
         self.course_name = course_name
         self.teacher_id = teacher_id
-        self.students:list['str'] = students #list of student ids
-        self.assigments:list['str'] = assigments #list of assigment ids
-        self.id = id
+        self.students = students if students is not None else []
+        self.assignments = assignments if assignments is not None else []
+        self._id = _id
 
     def __dict__(self):
         return {
             'course_name': self.course_name,
             'teacher_id': self.teacher_id,
             'students': self.students,
-            'assigments': self.assigments
+            'assignments': self.assignments,
         }
     
-    def to_id_name(self):
+    def essential_info(self):
         return {
-        "id": str(self.id),
-        "course_name": self.course_name
+            "id": str(self._id) if self._id else None,
+            "course_name": self.course_name
         }
+    
+    def to_course(course_data:dict) -> 'CourseModel':
+        return CourseModel(
+            course_name=course_data.get('course_name'),
+            teacher_id=course_data.get('teacher_id'),
+            students=course_data.get('students', []),
+            assignments=course_data.get('assignments', []),
+            _id=course_data.get('_id')
+        )
+    
 
     def save(self):
-        result = self.collection.insert_one(self.__dict__())
-        if result is None:
-            return 'Course Not Added', 400
-        return result.inserted_id, 200        
-
-    def get_all_with_specific_teacher(self) -> tuple[list['CourseModel'], int]:
-        coursesJSON = self.collection.find({'teacher_id': self.teacher_id})
-        if not coursesJSON:
-            return 'No Courses Found', 404
-        courses = []
-        for course in coursesJSON:
-            course = self.to_course(course)
-            courses.append(course)
-        return courses, 200
-
-    def get_one(self):
-        course = self.collection.find_one({'_id': ObjectId(self.id)})
-        if not course:
-            return 'Course Not Found', 404
-        return self.to_course(course), 200
+        result = collection.insert_one(self.__dict__())
+        return result if result else None
     
-
-    def to_course(self, course):
-        aux = CourseModel(
-            course['course_name'],
-            course['teacher_id'],
-            course['students'],
-            course['assigments'],
-            course['_id']
-        )
-        return aux
-    
-    # uwu only for testing
     def delete(self):
-        result = self.collection.delete_one({'_id': ObjectId(self.id)})
-        
-        if result.deleted_count == 0:
-            return 'Course Not Found', 404
-        
-        return f'Course with ID {self.id} deleted successfully', 200
+        result = collection.delete_one({'_id': ObjectId(self._id)})
+        return result if result else None
     
-    def get_students(self):
-        course = self.collection.find_one({'_id': ObjectId(self.id)})
+    def get_teacher_courses(self):
+        courses = collection.find({'teacher_id': self.teacher_id})
+        return courses if courses else None
+    
+    def get_one(self):
+        result = collection.find_one({'_id': ObjectId(self._id)})
+        return result if result else None
+    
+    def add_entry(self,entry_name, entry_value):
+        course = collection.find_one({'_id': ObjectId(self._id)})
         if not course:
             return 'Course Not Found', 404
-        return course['students'], 200
-    
-
-    def get_assignments(self):
-        course = self.collection.find_one({'_id': ObjectId(self.id)})
-        if not course:
-            return 'Course Not Found', 404
-        return course['assigments'], 200
-    
-
-    def remove_student(self, student_id):
-        result = self.collection.update_one(
-            {'_id': ObjectId(self.id)},
-            {'$pull': {'students': student_id}}
-        )
-        if result.modified_count == 0:
-            return 'Student Not Found', 404
-        return 'Student Removed Successfully', 200
-    
-    def add_student(self, student_id):
-        course = self.collection.find_one({'_id': ObjectId(self.id)})
-        if not course:
-            return 'Course Not Found', 404
-        if 'students' not in course or course['students'] is None:
-            self.collection.update_one(
-                {'_id': ObjectId(self.id)},
-                {'$set': {'students': []}}
+        if entry_name not in course or course[entry_name] is None:
+            collection.update_one(
+                {'_id': ObjectId(self._id)},
+                {'$set': {entry_name: []}}
             )
-        result = self.collection.update_one(
-            {'_id': ObjectId(self.id)},
-            {'$push': {'students': student_id}}
+        result = collection.update_one(
+            {'_id': ObjectId(self._id)},
+            {'$push': {entry_name: entry_value}}
         )
-        if result.modified_count == 0:
-            return 'Student Not Added', 400
-        return 'Student Added Successfully', 200
+        return result if result else None
     
-    def add_assignment(self, assignment_id):
-        course = self.collection.find_one({'_id': ObjectId(self.id)})
-        if not course:
-            return 'Course Not Found', 404
-        if 'assigments' not in course or course['assigments'] is None:
-            self.collection.update_one(
-                {'_id': ObjectId(self.id)},
-                {'$set': {'assigments': []}}
-            )
-        result = self.collection.update_one(
-            {'_id': ObjectId(self.id)},
-            {'$push': {'assigments': assignment_id}}
+    def remove_entry(self, entry_name, entry_value):
+        result = collection.update_one(
+            {'_id': ObjectId(self._id)},
+            {'$pull': {entry_name: entry_value}}
         )
-        if result.modified_count == 0:
-            return 'Assignment Not Added', 400
-        return 'Assignment Added Successfully', 200
-    
-    def remove_assignment(self, assignment_id):
-        result = self.collection.update_one(
-            {'_id': ObjectId(self.id)},
-            {'$pull': {'assigments': assignment_id}}
-        )
-        if result.modified_count == 0:
-            return 'Assignment Not Found', 404
-        return 'Assignment Removed Successfully', 200
+        return result if result else None

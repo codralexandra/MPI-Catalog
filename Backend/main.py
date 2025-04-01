@@ -17,7 +17,7 @@ from Student.teacher_routes import student_info_bp
 from Grade.routes import grade_bp
 name = 'Gradebook'
 app = Flask(name)
-CORS(app, origins="http://localhost:3000")
+CORS(app, origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"])
 
 
 app.register_blueprint(user_bp)
