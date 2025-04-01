@@ -47,6 +47,19 @@ class GradeResource(Resource):
                 return 'Grade Not Found', 404
             
         return "Grades Added Succesfully", 200
+    
+    def get():
+        student_id = request.args.getlist('student_id')
+        assignment_id = request.args.getlist('assignment_id')
+        if not student_id or not assignment_id:
+            return 'Student IDs And Assignment IDs Cannot Be Empty', 400
+        if not ObjectId.is_valid(student_id):
+            return 'Invalid Student ID', 400
+        if not ObjectId.is_valid(assignment_id):
+            return 'Invalid Assignment ID', 400
 
-       
-        
+        grade = GradeModel(student_id=student_id, assignment_id=assignment_id)
+        result = grade.find()
+        if not result:
+            return 'Grade Not Found', 404
+        return result['score'], 200
