@@ -15,3 +15,14 @@ grade_bp = Blueprint('grade', __name__, url_prefix='/grade')
 @grade_bp.route('/post', methods=['POST'])
 def post():
     return GradeResource.post()
+
+
+"""
+/get:
+    - Description: Handles grade retrieval.
+    - Request Body: Expects 'student_id', list of 'assignment_ids'.
+    - Response: Returns average if retrieval is successful, or an error message if retrieval fails.
+"""
+@grade_bp.route('/get', methods=['POST'])
+def get():
+    return GradeResource.get()

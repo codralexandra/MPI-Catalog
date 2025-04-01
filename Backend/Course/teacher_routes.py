@@ -204,6 +204,26 @@ def remove_student():
     return 'Student Removed Successfully', 200
 
 
+"""
+/get-student-average:
+    - Description: Handles student average retrieval.
+    - Request Body: Expects 'course_id' and 'student_id'.
+    - Response: Returns the average score if retrieval is successful, or an error message if retrieval fails.
+"""
+@teacher_course_bp.route('/get-student-average', methods=['POST'])
+def get_student_average():
+    message, code = Course.get_assignments()
+    if code != 200:
+        return message, code
+    assignment_ids = message
+
+    grade_url = url_for('grade.get', _external=True)
+    result =  requests.post(grade_url, data={'student_id': request.form.get('student_id'), 'assignment_ids': assignment_ids})
+    if result.status_code != 200:
+        return 'Grade Not Found', 404
+    return str(result.text),200
+        
+
 # uwu only for testing again
 """
 /delete:
