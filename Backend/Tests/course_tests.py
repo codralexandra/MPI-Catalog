@@ -76,13 +76,13 @@ class TeacherCourseTests(unittest.TestCase):
     # COURSE TESTS
     def test_get_one_success(self):
         """Test successful course retrieval by course_id."""
-        response = self.client.get('/course/teacher/get-one', data={'course_id': '67e29e4c900069427cc4c358'})
+        response = self.client.get('/course/teacher/get-one', data={'course_id': '67eb7e6819e4efb7ace61263'})
         # Don't change this please
         # Needs to be a mongoDB generated ID
         self.assertEqual(response.status_code, 200)
         json_data = response.get_json()
 
-        self.assertIn('TEST3', list(json_data.values())) 
+        self.assertIn('Math', list(json_data.values())) 
         print("\n✅ Test - Successful Course Retrieval")
 
     def test_get_all_success(self):
@@ -129,7 +129,7 @@ class TeacherCourseTests(unittest.TestCase):
     @patch("requests.post", side_effect=mock_assignment_response)
     def test_get_assignments(self, mock_post):
         """Test retrieving assignments for a course."""
-        course_id = '67e29e4c900069427cc4c358'
+        course_id = '67eb7e6819e4efb7ace61263'
         response = self.client.post('/course/teacher/get-assignments', data={'course_id': course_id})
         self.assertEqual(response.status_code, 200)
 
@@ -147,7 +147,7 @@ class TeacherCourseTests(unittest.TestCase):
     @patch("requests.delete", side_effect=mock_delete_assignment)
     def test_add_assignment(self, mock_delete, mock_post):
         """Test adding and deleting an assignment for a course."""
-        course_id = '67e29e4c900069427cc4c358'
+        course_id = '67eb7e6819e4efb7ace61263'
         title = 'TEST ASSIGNMENT'
         date_start = '02.08.2003'
         date_end = '02.08.2003'
@@ -158,7 +158,6 @@ class TeacherCourseTests(unittest.TestCase):
             'date_start': date_start,
             'date_end': date_end
         })
-
         self.assertEqual(response.status_code, 200)
 
         assignment_id = response.get_data(as_text=True).strip()
@@ -178,7 +177,7 @@ class TeacherCourseTests(unittest.TestCase):
     @patch("requests.post", side_effect=mock_student_info_response)
     def test_get_students(self, mock_post):
         """Test retrieving students for a course."""
-        course_id = '67e29e4c900069427cc4c358'
+        course_id = '67eb7e6819e4efb7ace61263'
     
         response = self.client.post('/course/teacher/get-students', data={'course_id': course_id})
     
@@ -201,7 +200,7 @@ class TeacherCourseTests(unittest.TestCase):
     @patch("Course.model.CourseModel.remove_entry", side_effect=mock_remove_student)
     def test_add_student(self, mock_remove_student, mock_add_student, mock_post):
         """Test adding and removing a student to/from a course."""
-        course_id = '67e29e4c900069427cc4c358'
+        course_id = '67eb7e6819e4efb7ace61263'
         student_data = {
             'first_name': 'test',
             'last_name': 'student',

@@ -10,7 +10,7 @@ class GradeResource(Resource):
         student_ids = request.form.getlist('student_ids')
         assignment_ids = request.form.getlist('assignment_ids')
         scores = request.form.getlist('scores')
-
+        
         if not student_ids or not assignment_ids or not scores:
             return 'Student IDs, Assignment IDs And Grades Fields Cannot Be Empty', 400
         if len(student_ids) != len(assignment_ids) or len(student_ids) != len(scores):
@@ -40,6 +40,7 @@ class GradeResource(Resource):
             grade = GradeModel(student_id=student_id, assignment_id=assignment_id, score=score, date=date)
             result = grade.find()
             if result:
+                print('found')
                 result = grade.update()
             else: result = grade.save()
             if not result:

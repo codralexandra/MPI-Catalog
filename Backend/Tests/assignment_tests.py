@@ -37,14 +37,14 @@ class AssignmentTests(unittest.TestCase):
 
     def test_get_assignment_success(self):
         get_response = self.client.post('/assignment/get', data={
-            'assignment_id': '67e52cb63f0ea5e888298b9e'
+            'assignment_id': '67eb7f498071b55f16532787'
         })
         
         self.assertEqual(get_response.status_code, 200)
         data = json.loads(get_response.data)
-        self.assertEqual(data['title'], 'Assigment2')
-        self.assertEqual(data['date_start'], '13.05.2004')
-        self.assertEqual(data['date_end'], '13.05.2025')
+        self.assertEqual(data['title'], 'Multiplications')
+        self.assertEqual(data['date_start'], '01.04.2025')
+        self.assertEqual(data['date_end'], '04.04.2025')
 
         print("\n✅ Test - Successful Assignment Get")
 

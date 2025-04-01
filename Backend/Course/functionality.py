@@ -83,7 +83,7 @@ class Course(Resource):
             return 'Course ID and Student ID Fields Cannot Be Empty', 400
         
         course = CourseModel(_id=course_id)
-        result = course.add_entry('student_id',student_id)
+        result = course.add_entry('students',student_id)
         if not result:
             return 'Student Not Added', 400
         return 'Student Added Successfully', 200
@@ -95,7 +95,7 @@ class Course(Resource):
             return 'Course ID and Student ID Fields Cannot Be Empty', 400
         
         course = CourseModel(_id=course_id)
-        result = course.remove_entry('student_id',student_id)
+        result = course.remove_entry('students',student_id)
         if not result:
             return 'Student Not Removed', 400
         return 'Student Removed Successfully', 200
@@ -106,7 +106,7 @@ class Course(Resource):
             return 'Course ID and Assignment ID Fields Cannot Be Empty', 400
         
         course = CourseModel(_id=course_id)
-        result = course.add_entry('assignment_id',assignment_id)
+        result = course.add_entry('assignments',assignment_id)
         if not result:
             return 'Assignment Not Added', 400
         return 'Assignment Added Successfully', 200
@@ -118,7 +118,7 @@ class Course(Resource):
             return 'Course ID and Assignment ID Fields Cannot Be Empty', 400
         
         course = CourseModel(_id=course_id)
-        result = course.remove_entry('assignment_id',assignment_id)
+        result = course.remove_entry('assignments',assignment_id)
         if not result:
             return 'Assignment Not Removed', 400
         return 'Assignment Removed Successfully', 200
