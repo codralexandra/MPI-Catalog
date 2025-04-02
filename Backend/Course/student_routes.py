@@ -2,7 +2,7 @@ from flask import Blueprint, url_for
 from Course.functionality import Course
 from flask_restful import request
 import requests
-
+from logger import log_route_io
 
 student_course_bp = Blueprint('student_course', __name__, url_prefix='/course/student')
 
@@ -13,6 +13,7 @@ student_course_bp = Blueprint('student_course', __name__, url_prefix='/course/st
     - Response: Returns list of coruses ids, names and avg score, or an error message if not found.
 """
 @student_course_bp.route('/get', methods=['POST'])
+@log_route_io
 def get_student_courses():
     returned_value = []
     
@@ -49,6 +50,7 @@ def get_student_courses():
     - Response: Returns list of assignments ids and names,and grade, or an error message if not found.
 """
 @student_course_bp.route('/get-course-assignments', methods=['POST'])
+@log_route_io
 def get_course_assignments():
     course_url = url_for('course.get_assignments', _external=True)
     response = requests.post(course_url, data={'course_id': request.form.get('course_id')})
