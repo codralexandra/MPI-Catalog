@@ -46,3 +46,4 @@ def reset_password():
 @user_bp.route('/delete-user', methods=['POST'])
 def delete_user():
     return User.delete_user()
+

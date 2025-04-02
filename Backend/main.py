@@ -7,15 +7,18 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'Teacher'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Student'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Coruse'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'Grade'))
+sys.path.append(os.path.join(os.path.dirname(__file__), 'Backup'))
 
 from flask import Flask
 from flask_cors import CORS
 from User.routes import user_bp
+from Backup.routes import backup_bp
 from Course.teacher_routes import teacher_course_bp
 from Course.student_routes import student_course_bp
 from Assignment.routes import teacher_assignment_bp
 from Student.teacher_routes import student_info_bp
 from Grade.routes import grade_bp
+
 
 name = 'Gradebook'
 app = Flask(name)
@@ -28,6 +31,7 @@ app.register_blueprint(teacher_course_bp)
 app.register_blueprint(student_info_bp)
 app.register_blueprint(grade_bp)
 app.register_blueprint(student_course_bp)
+app.register_blueprint(backup_bp)
 
 
 
