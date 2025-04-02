@@ -138,5 +138,17 @@ class Course(Resource):
             course = course.essential_info()
             courses.append(course)
         return courses, 200
+    
+    def get_assignments(course_id):
+        if not course_id:
+            return 'Course ID Field Cannot Be Empty', 400
+        
+        course = CourseModel(_id=course_id)
+        result = course.get_one()
+        if not result:
+            return 'Course Not Found', 404
+        return result['assignments'], 200
+    
+    
 
 

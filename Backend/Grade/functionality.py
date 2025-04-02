@@ -65,7 +65,7 @@ class GradeResource(Resource):
             grade = GradeModel(student_id=student_id, assignment_id=assignment_id)
             result = grade.find()
             if not result:
-                return 'Grade Not Found', 404
+                return f'Grade Not Found {assignment_id}', 404
             if not result['score'] == 0:
                 avg+=float(result['score'])
                 num_scores+=1
