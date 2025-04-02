@@ -17,6 +17,7 @@ function StudentPage() {
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [courses, setCourses] = useState([]);
+  const [totalAvg, setTotalAvg] = useState(null);
 
   const handleCourseClick = async (course) => {
     setSelectedCourse(course); 
@@ -34,6 +35,7 @@ function StudentPage() {
       updatedCourse.assignments = assignmentData.map(
         a => new Assignment(a.assignment_id, a.assignment_name, a.assignment_start_date, a.assignment_due_date, a.score, a.grade_date)
       );
+
     } catch (error) {
       console.error(`Error fetching assignments for course ${course.id}`, error);
       updatedCourse.assignments = [];
@@ -63,6 +65,24 @@ function StudentPage() {
         });
 
         setCourses(courseList);
+
+        let sum = 0;
+        let count = 0;
+
+        for (let i = 0; i < courseList.length; i++) {
+          const avg = courseList[i].avg;
+          if (avg !== null && avg !== undefined && !isNaN(avg)) {
+            sum += parseFloat(avg);
+            count++;
+          }
+        }
+
+        if (count > 0) {
+          setTotalAvg((sum / count).toFixed(2)); 
+        } else {
+          setTotalAvg(null);
+        }
+
       }
       catch(error)
       {
@@ -72,7 +92,7 @@ function StudentPage() {
 
     };
     loadCourses();
-  }, [student_id]);
+  }, [student_id, totalAvg]);
 
   return (
     <div>
@@ -132,6 +152,13 @@ function StudentPage() {
                 </div>
               </div>
             )}
+
+            <div className="data-individual-wrapper">
+                <div className="data-button" style={{ margin: '10px 0' }}>
+                  <h2>Total Average Score: </h2>
+                  {totalAvg ? totalAvg : 'No scores available'}
+                </div>
+            </div>
        </div>
 
     </div>
