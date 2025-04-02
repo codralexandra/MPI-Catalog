@@ -71,3 +71,7 @@ class CourseModel:
             {'$pull': {entry_name: entry_value}}
         )
         return result if result else None
+    
+    def get_student_courses(self):
+        result = collection.find({"students": str(self.students[0])}) 
+        return result if result else None

@@ -123,5 +123,20 @@ class Course(Resource):
             return 'Assignment Not Removed', 400
         return 'Assignment Removed Successfully', 200
     
+    def get_student_courses():
+        student_id = request.form.get('student_id')
+        if not student_id:
+            return 'Student ID Field Cannot Be Empty', 400
+        
+        course = CourseModel(students=[student_id])
+        result = course.get_student_courses()
+        if not result:
+            return 'No Courses Found', 404
+        courses = []
+        for course in result:
+            course:CourseModel = CourseModel.to_course(course)
+            course = course.essential_info()
+            courses.append(course)
+        return courses, 200
 
 
