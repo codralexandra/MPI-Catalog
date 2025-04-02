@@ -90,7 +90,7 @@ function TeacherPage() {
         const assignmentRes = await axiosClient.post(ADD_ASSIGNMENT_TO_COURSE_URL, addAssignmentForm);
 
         const assignmentId = assignmentRes.data;  
-        const newAssignment = new Assignment(assignmentId, assignmentTitle, formattedStartDate, formattedEndDate);
+        const newAssignment = new Assignment(assignmentId, assignmentTitle, formattedStartDate, formattedEndDate, 0, '');
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
           assignments: [...prevCourse.assignments, newAssignment],
@@ -312,7 +312,7 @@ function TeacherPage() {
         const data = response.data;
 
         const loadedCourses = data.map(course =>
-          new Course(course.id, course.course_name, [], [])
+          new Course(course.id, course.course_name, [], [], 0)
         );
 
         setCourses(loadedCourses);
@@ -338,7 +338,7 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end)
+        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end, 0, '')
       );
 
     } catch (error) {

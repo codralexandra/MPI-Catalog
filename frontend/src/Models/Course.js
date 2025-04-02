@@ -2,7 +2,7 @@ import { Student } from './Student';
 import { Assignment } from './Assignment';
 
 export class Course {
-  constructor(id, name, students = [], assignments = []) {
+  constructor(id, name, students = [], assignments = [], avg) {
     this.id = id;
     this.name = name;
     this.students = students.map(
@@ -11,6 +11,7 @@ export class Course {
     this.assignments = assignments.map(
       (a) => (a instanceof Assignment ? a : new Assignment(a.id, a.name))
     );
+    this.avg = avg;
   }
 
   addStudent(student) {
