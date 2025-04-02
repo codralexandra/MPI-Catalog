@@ -74,7 +74,9 @@ def get_course_assignments():
         return_value.append({
             'assignment_id': assignment_info[i]["id"],
             'assignment_name': assignment_info[i]["title"],
+            'assignment_start_date': assignment_info[i]["date_start"],
+            'assignment_due_date': assignment_info[i]["date_end"],
             'score': grades[i]['score'],
-            'date': grades[i]['date']
+            'grade_date': grades[i]['date']
         })
     return return_value, 200
