@@ -51,7 +51,7 @@ function Login() {
             const id = data.id;
             
             if (role === 'student') {
-                navigate(STUDENT_URL);
+                navigate(STUDENT_URL, { state: { email: login, student_id: id } });
             } else if (role === 'teacher') {
                 navigate(TEACHER_URL, { state: { email: login, teacher_id: id } });
             } else {

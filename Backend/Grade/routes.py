@@ -18,10 +18,21 @@ def post():
 
 
 """
+/get-average:
+    - Description: Handles average grade retrieval.
+    - Request Body: Expects 'student_id', list of 'assignment_ids'.
+    - Response: Returns average if retrieval is successful, or an error message if retrieval fails.
+"""
+@grade_bp.route('/get-average', methods=['POST'])
+def get_average():
+    return GradeResource.get_average()
+
+
+""""
 /get:
     - Description: Handles grade retrieval.
     - Request Body: Expects 'student_id', list of 'assignment_ids'.
-    - Response: Returns average if retrieval is successful, or an error message if retrieval fails.
+    - Response: Returns grades if retrieval is successful, or an error message if retrieval fails.
 """
 @grade_bp.route('/get', methods=['POST'])
 def get():

@@ -41,12 +41,25 @@ class GradeTests(unittest.TestCase):
         
         print("\n✅ Test - Successful Bulk Grade Upload")
 
+    def test_get_grades(self):
+        """Test successful retrieval of grades."""
+        student_id = '67e53c3f60f8a5d53171ec45'
+        assignment_ids = ['67ebfbc7a97c28fd3846c0c6']
+        response = self.client.post('/grade/get', data={
+            'student_id': student_id,
+            'assignment_ids': assignment_ids
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data)
+
+        print("\n✅ Test - Successful Grade Retrieval")
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()
     
     suite.addTest(GradeTests('test_add_grade_success'))
     suite.addTest(GradeTests('test_add_bulk_success'))
+    suite.addTest(GradeTests('test_get_grades'))
 
     runner = unittest.TextTestRunner()
     runner.run(suite)

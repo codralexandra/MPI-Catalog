@@ -12,9 +12,11 @@ from flask import Flask
 from flask_cors import CORS
 from User.routes import user_bp
 from Course.teacher_routes import teacher_course_bp
+from Course.student_routes import student_course_bp
 from Assignment.routes import teacher_assignment_bp
 from Student.teacher_routes import student_info_bp
 from Grade.routes import grade_bp
+
 name = 'Gradebook'
 app = Flask(name)
 CORS(app, origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"])
@@ -25,6 +27,7 @@ app.register_blueprint(teacher_assignment_bp)
 app.register_blueprint(teacher_course_bp)
 app.register_blueprint(student_info_bp)
 app.register_blueprint(grade_bp)
+app.register_blueprint(student_course_bp)
 
 
 

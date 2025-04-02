@@ -48,7 +48,7 @@ class GradeResource(Resource):
             
         return "Grades Added Succesfully", 200
     
-    def get():
+    def get_average():
         student_id = request.form.get('student_id')
         assignment_ids = request.form.getlist('assignment_ids')
 
@@ -65,7 +65,7 @@ class GradeResource(Resource):
             grade = GradeModel(student_id=student_id, assignment_id=assignment_id)
             result = grade.find()
             if not result:
-                return 'Grade Not Found', 404
+                return f'Grade Not Found {assignment_id}', 404
             if not result['score'] == 0:
                 avg+=float(result['score'])
                 num_scores+=1
@@ -73,3 +73,27 @@ class GradeResource(Resource):
             return 'No Grades Found', 404
         avg /= num_scores
         return str(avg), 200
+    
+
+    def get():
+        student_id = request.form.get('student_id')
+        assignment_ids = request.form.getlist('assignment_ids')
+        if not student_id or not assignment_ids:
+            return 'Student ID And Assignment ID Cannot Be Empty', 400
+        if not ObjectId.is_valid(student_id):
+            return 'Invalid Student ID', 400
+        
+        grades = []
+        for assignment_id in assignment_ids:
+            if not ObjectId.is_valid(assignment_id):
+                return 'Invalid Assignment ID', 400
+            grade = GradeModel(student_id=student_id, assignment_id=assignment_id)
+            result = grade.find()
+            if not result:
+                print(assignment_id)
+                return 'Grade Not Found', 404
+            grades.append({'score': result['score'], 'date': result['date']})
+        if not grades:
+            return 'No Grades Found', 404
+        
+        return grades, 200

@@ -217,13 +217,69 @@ def get_student_average():
         return message, code
     assignment_ids = message
 
-    grade_url = url_for('grade.get', _external=True)
+    grade_url = url_for('grade.get_average', _external=True)
     result =  requests.post(grade_url, data={'student_id': request.form.get('student_id'), 'assignment_ids': assignment_ids})
     if result.status_code != 200:
         return 'Grade Not Found', 404
     return str(result.text),200
         
+"""
+/get-student-grades:
+    - Description: Handles student grades retrieval.
+    - Request Body: Expects 'course_id'.
+    - Response: Returns a list of type:  {'student_name': student_name, 'grade_info': [ {'assignment_name': assignment_name, 'score':score, 'date': date}]} if retrieval is successful, or an error message if retrieval fails.
+"""
+@teacher_course_bp.route('/get-student-grades', methods=['POST'])
+def get_student_grades():
+    assignments_title = []
+    students_info = []
+    message, code = Course.get_assignments()
+    if code != 200:
+        return message, code
+    assignment_ids = message
+    assignment_url = url_for('assignment.get', _external=True) 
+    for assignment_id in assignment_ids:
+        response = requests.post(assignment_url, data={'assignment_id': assignment_id})
+        if response.status_code != 200:
+            f'Something Went Wrong, {response.text}', response.status_code
+        assignment_name = response.json()['title']
+        assignments_title.append({'id':assignment_id, 'name':assignment_name})
 
+    message, code = Course.get_students()
+    if code != 200:
+        return message, code
+    student_ids = message
+    student_url = url_for('student_info_bp.get_bulk_info', _external=True)
+    response = requests.post(student_url, data={'student_ids': student_ids})
+    if response.status_code != 200:
+        f'Something Went Wrong, {response.text}', response.status_code
+    data = response.json()
+    for i in range(len(student_ids)):
+        student_id = student_ids[i]
+        student_name = data[i]['first_name'] + ' ' + data[i]['last_name']
+        students_info.append({'id': student_id, 'name': student_name})
+    
+    grades = []
+    for student_info in students_info:
+        student_id = student_info['id']
+        student_name = student_info['name']
+        student_grades = []
+        grade_url = url_for('grade.get', _external=True)
+        response = requests.post(grade_url, data={'student_id': student_id, 'assignment_ids': assignment_ids})
+        if response.status_code != 200:
+            return f'Something Went Wrong, {response.text}', response.status_code
+        grade_info = response.json()
+        for i in range(len(grade_info)):
+            score = grade_info[i]['score']
+            date = grade_info[i]['date']
+            assignment_name = assignments_title[i]['name']
+            grade = {'score': score, 'date': date}
+            student_grades.append({'assignment_name': assignment_name, 'score': grade['score'], 'date': grade['date']})
+        grades.append({'student_name': student_name, 'grade_info': student_grades})
+
+    return grades, 200
+
+    
 # uwu only for testing again
 """
 /delete:

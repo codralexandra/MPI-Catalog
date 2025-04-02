@@ -31,6 +31,7 @@ const REMOVE_STUDENT_FROM_COURSE_URL = "/course/teacher/remove-student";
 const ADD_ASSIGNMENT_TO_COURSE_URL = "/course/teacher/add-assignment";
 const REMOVE_ASSIGNMENT_FROM_COURSE_URL = "/course/teacher/remove-assignment";
 const ADD_GRADE_TO_ASSIGNMENT_URL = "/grade/post";
+const GET_STUDENT_GRADES_URL = " /course/teacher/get-student-grades";
 
 function TeacherPage() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function TeacherPage() {
   const GradeValues = ["None", ...Array.from({ length: 10 }, (_, i) => (i + 1).toString())];
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [bulkGrades, setBulkGrades] = useState([]);
+  const [seeGradesForAssignment, setSeeGradesForAssignment] = useState(false);
   
   {/*HANDLE ASSIGNMENT DATA*/}
   const handleAssignmentDialogOpen = () => {
@@ -88,7 +90,7 @@ function TeacherPage() {
         const assignmentRes = await axiosClient.post(ADD_ASSIGNMENT_TO_COURSE_URL, addAssignmentForm);
 
         const assignmentId = assignmentRes.data;  
-        const newAssignment = new Assignment(assignmentId, assignmentTitle, formattedStartDate, formattedEndDate);
+        const newAssignment = new Assignment(assignmentId, assignmentTitle, formattedStartDate, formattedEndDate, 0, '');
         setSelectedCourse((prevCourse) => ({
           ...prevCourse,
           assignments: [...prevCourse.assignments, newAssignment],
@@ -104,9 +106,48 @@ function TeacherPage() {
     handleAssignmentDialogClose();
   }
 
-  const handleAssignmentClick = (assignment) => {
+  const handleAssignmentClick = async (assignment) => {
     setSelectedAssignmentId(assignment.id);
+    setSeeGradesForAssignment(false); 
+  
+    if (!selectedCourse) return;
+  
+    try {
+      const formData = new URLSearchParams();
+      formData.append('course_id', selectedCourse.id);
+      const response = await axiosClient.post(GET_STUDENT_GRADES_URL.trim(), formData);
+  
+      const gradeData = response.data;
+  
+      const assignmentTitle = assignment.title;
+  
+      const gradesMap = {};
+      for (const studentGrade of gradeData) {
+        const { student_name, grade_info } = studentGrade;
+        const targetAssignment = grade_info.find(g => g.assignment_name === assignmentTitle);
+        gradesMap[student_name.toLowerCase()] = targetAssignment?.score ?? 'N/A';
+      }
+  
+      const updatedStudents = selectedCourse.students.map((student) => {
+        const fullName = `${student.first_name} ${student.last_name}`.toLowerCase();
+        return {
+          ...student,
+          grade: gradesMap[fullName] || 'N/A',
+        };
+      });
+  
+      setSelectedCourse((prevCourse) => ({
+        ...prevCourse,
+        students: updatedStudents,
+      }));
+  
+      setSeeGradesForAssignment(true);
+    } catch (error) {
+      console.error('Error loading grades:', error);
+      alert('Something went wrong while loading the grades.');
+    }
   };
+  
 
   const handleRemoveAssignment = () => {
     const removeAssignment = async () => {
@@ -271,7 +312,7 @@ function TeacherPage() {
         const data = response.data;
 
         const loadedCourses = data.map(course =>
-          new Course(course.id, course.course_name, [], [])
+          new Course(course.id, course.course_name, [], [], 0)
         );
 
         setCourses(loadedCourses);
@@ -297,7 +338,7 @@ function TeacherPage() {
   
       const assignmentData = assignmentRes.data;
       updatedCourse.assignments = assignmentData.map(
-        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end)
+        (a) => new Assignment(a.id, a.title, a.date_start, a.date_end, 0, '')
       );
 
     } catch (error) {
@@ -327,6 +368,7 @@ function TeacherPage() {
     setSelectedCourse(updatedCourse);
     setSelectedStudentId(null);
     setSelectedAssignmentId(null);
+    setSeeGradesForAssignment(false);
   };  
 
   return (
@@ -362,7 +404,6 @@ function TeacherPage() {
                   <button className="grade-add-button" onClick={handleGradeDialogOpen}>MANAGE GRADES for {selectedCourse.name} </button>
               </div>
             )}
-
 
         </div>
         
@@ -431,6 +472,11 @@ function TeacherPage() {
                       onClick={() => handleStudentClick(student)}
                     >
                       {student.first_name} {student.last_name}
+                      {seeGradesForAssignment && (
+                          <div className="data-button-subtext">
+                            Grade: {student.grade}
+                          </div>
+                        )}
                     </button>
                   ))
                 )}
