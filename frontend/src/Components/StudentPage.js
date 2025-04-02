@@ -121,10 +121,10 @@ function StudentPage() {
                   ) : (
                     selectedCourse.assignments.map((assignment, index) => (
                       <div key={assignment.id || index} className="data-button" style={{ margin: '10px 0' }}>
-                        <strong>{assignment.name}</strong>
+                        <strong>{assignment.title}</strong>
                         <br />
                         <div className="data-button-subtext">
-                          Grade: {assignment.score} '[' added on {assignment.score_date} ']'
+                          Grade: {assignment.score} [ added on {assignment.score_date} ]
                         </div>
                       </div>
                     ))
