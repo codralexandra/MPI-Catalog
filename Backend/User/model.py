@@ -1,12 +1,13 @@
 from db_utils import db_database
 
 class UserModel:
-    def __init__ (self, username, password, role=None):
+    def __init__ (self, username, password, role=None, person_id=None):
         self.collection = db_database.get_collection('User')
         self.username = username
         self.password = password
         self._id = None
         self.role = role    #'student' or 'teacher'
+        self.person_id = person_id # id of the person in the Person collection
 
     def save(self):
         dict = self.to_dict()
@@ -19,7 +20,8 @@ class UserModel:
         return {
             'username': self.username,
             'password': self.password,
-            'role': self.role
+            'role': self.role,
+            'person_id': self.person_id
         }
     
     def find(self):

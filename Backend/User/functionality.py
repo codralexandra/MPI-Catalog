@@ -16,7 +16,7 @@ class User(Resource):
         if code == 403:
             return 'Incorrect Password', 403
 
-        return {'role': user_found['role'], 'id': str(user_found['_id'])}, 200
+        return {'role': user_found['role'], 'id': str(user_found['person_id'])}, 200
 
 
     def register():
