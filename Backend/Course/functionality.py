@@ -139,7 +139,7 @@ class Course(Resource):
             courses.append(course)
         return courses, 200
     
-    def get_assignments(course_id):
+    def get_assignments_without_request(course_id):
         if not course_id:
             return 'Course ID Field Cannot Be Empty', 400
         
