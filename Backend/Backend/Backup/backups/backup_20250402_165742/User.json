@@ -1,0 +1,29 @@
+[
+    {
+        "_id": "67dfe103090f6ad84aea4020",
+        "username": "robert.preot@unitbv.ro",
+        "password": "miau",
+        "role": "student",
+        "person_id": "67e53bd260f8a5d53171ec44"
+    },
+    {
+        "_id": "67dfe187cae9f2bf02424746",
+        "username": "silviu.rosca@unitbv.ro",
+        "password": "test",
+        "role": "teacher",
+        "person_id": "67dfe187cae9f2bf02424746"
+    },
+    {
+        "_id": "67e2a3b4e915e9c02d44506c",
+        "username": "teacher2@unitbv.ro",
+        "password": "test",
+        "role": "teacher",
+        "person_id": "67e2a3b4e915e9c02d44506c"
+    },
+    {
+        "_id": "67e53c3f60f8a5d53171ec45",
+        "username": "ioana.magiun@unitbv.ro",
+        "password": "miau",
+        "role": "student"
+    }
+]

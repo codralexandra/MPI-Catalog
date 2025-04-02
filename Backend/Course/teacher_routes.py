@@ -2,7 +2,7 @@ from flask import Blueprint, url_for
 from Course.functionality import Course
 from flask_restful import request
 import requests
-
+from logger import log_route_io
 
 teacher_course_bp = Blueprint('course', __name__, url_prefix='/course/teacher')
 
@@ -13,6 +13,7 @@ teacher_course_bp = Blueprint('course', __name__, url_prefix='/course/teacher')
     - Response: Returns the course id and name if found, or an error message if no course is found.
 """
 @teacher_course_bp.route('/get-one', methods=['GET'])
+@log_route_io
 def get_one():
     return Course.get_one()
 
@@ -23,6 +24,7 @@ def get_one():
     - Response: Returns a list of course ids and names if found, or an error message if no courses are found.
 """
 @teacher_course_bp.route('/get', methods=['POST'])
+@log_route_io
 def get():
     return Course.get()
 
@@ -33,6 +35,7 @@ def get():
     - Response: Returns a success message if addition is successful, or an error message if addition fails.
 """
 @teacher_course_bp.route('/post', methods=['POST'])
+@log_route_io
 def post():
     return Course.post()
 
@@ -43,6 +46,7 @@ def post():
     - Response: Returns a list of assignments if retrieval is successful, or an error message if retrieval fails.
 """
 @teacher_course_bp.route('/get-assignments', methods=['POST'])
+@log_route_io
 def get_assignments():
     assignment_ids ,code = Course.get_assignments()
     if code == 404:
@@ -62,6 +66,7 @@ def get_assignments():
     - Request Body: Expects 'course_id' and 'title', 'date_start' and 'date_end'.
     - Response: Returns id if addition is successful, or an error message if addition fails."""
 @teacher_course_bp.route('/add-assignment', methods=['POST'])
+@log_route_io
 def add_assignment():
     #Creat Assignment
     assignmnets_url = url_for('assignment.post', _external=True)
@@ -98,6 +103,7 @@ def add_assignment():
     - Response: Returns a success message if removal is successful, or an error message if removal fails.
 """
 @teacher_course_bp.route('/remove-assignment', methods=['POST'])
+@log_route_io
 def remove_assignment():
     #Delete the Assignment
     assignments_url = url_for('assignment.delete', _external=True)
@@ -132,6 +138,7 @@ def remove_assignment():
     - Response: Returns a list of students if retrieval is successful, or an error message if retrieval fails.
 """
 @teacher_course_bp.route('/get-students', methods=['POST'])
+@log_route_io
 def get_students():
     student_ids,code = Course.get_students()
     if code != 200:
@@ -150,6 +157,7 @@ def get_students():
     - Response: Returns a success message if addition is successful, or an error message if addition fails.
 """
 @teacher_course_bp.route('/add-student', methods=['POST'])
+@log_route_io
 def add_student():
     # get student id from the studen table
     student_info_url = url_for('student_info_bp.get_id', _external=True)
@@ -184,6 +192,7 @@ def add_student():
     - Response: Returns a success message if removal is successful, or an error message if removal fails.
 """
 @teacher_course_bp.route('/remove-student', methods=['POST'])
+@log_route_io
 def remove_student():
     message,code= Course.remove_student()
     if code != 200:
@@ -211,6 +220,7 @@ def remove_student():
     - Response: Returns the average score if retrieval is successful, or an error message if retrieval fails.
 """
 @teacher_course_bp.route('/get-student-average', methods=['POST'])
+@log_route_io
 def get_student_average():
     message, code = Course.get_assignments()
     if code != 200:
@@ -230,6 +240,7 @@ def get_student_average():
     - Response: Returns a list of type:  {'student_name': student_name, 'grade_info': [ {'assignment_name': assignment_name, 'score':score, 'date': date}]} if retrieval is successful, or an error message if retrieval fails.
 """
 @teacher_course_bp.route('/get-student-grades', methods=['POST'])
+@log_route_io
 def get_student_grades():
     assignments_title = []
     students_info = []
@@ -288,6 +299,7 @@ def get_student_grades():
     - Response: Returns a success message if deletion is successful, or an error message if deletion fails.
 """
 @teacher_course_bp.route('/delete', methods=['DELETE'])
+@log_route_io
 def delete():
     return Course.delete()
 

@@ -1,6 +1,6 @@
 from flask import Blueprint
 from User.functionality import User
-
+from logger import log_route_io
 user_bp = Blueprint('user', __name__)
 
 
@@ -11,6 +11,7 @@ user_bp = Blueprint('user', __name__)
     - Response: Returns the user ID and role if found in the database, or an error message and code if not found.
 """
 @user_bp.route('/login', methods=['POST'])
+@log_route_io
 def login():
     return User.login()
 
@@ -22,6 +23,7 @@ def login():
     - Response: Returns a success message if registration is successful, or an error message if registration fails.
 """
 @user_bp.route('/register', methods=['POST'])
+@log_route_io
 def register():
     return User.register()
 
@@ -33,6 +35,7 @@ def register():
     - Response: Returns a success message if reset is successful, or an error message if the user is not found.
 """
 @user_bp.route('/reset-password', methods=['POST'])
+@log_route_io
 def reset_password():
     return User.reset_password()
 
@@ -44,5 +47,7 @@ def reset_password():
     - Response: Returns a success message if delete is successful, or an error message if the user is not found.
 """
 @user_bp.route('/delete-user', methods=['POST'])
+@log_route_io
 def delete_user():
     return User.delete_user()
+

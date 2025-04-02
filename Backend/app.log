@@ -1,0 +1,10 @@
+2025-04-02 16:57:35,459 - WARNING -  * Debugger is active!
+2025-04-02 16:57:35,463 - INFO -  * Debugger PIN: 141-079-922
+2025-04-02 16:57:40,979 - WARNING - Failed to parse JSON input: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-04-02 16:57:40,980 - INFO - Route: /backup, Method: POST, Input: {"course_id": "67eb7e6819e4efb7ace61263", "student_id": "67e53c3f60f8a5d53171ec45"}
+2025-04-02 16:57:41,289 - INFO - Route: /backup, Method: POST, Output: {"message": "Backup created at Backend/Backup/backups\\backup_20250402_165740"}
+2025-04-02 16:57:41,290 - INFO - 127.0.0.1 - - [02/Apr/2025 16:57:41] "POST /backup HTTP/1.1" 200 -
+2025-04-02 16:57:42,239 - WARNING - Failed to parse JSON input: 415 Unsupported Media Type: Did not attempt to load JSON data because the request Content-Type was not 'application/json'.
+2025-04-02 16:57:42,240 - INFO - Route: /backup, Method: POST, Input: {"course_id": "67eb7e6819e4efb7ace61263", "student_id": "67e53c3f60f8a5d53171ec45"}
+2025-04-02 16:57:42,370 - INFO - Route: /backup, Method: POST, Output: {"message": "Backup created at Backend/Backup/backups\\backup_20250402_165742"}
+2025-04-02 16:57:42,370 - INFO - 127.0.0.1 - - [02/Apr/2025 16:57:42] "POST /backup HTTP/1.1" 200 -

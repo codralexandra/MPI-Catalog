@@ -1,6 +1,6 @@
 from flask import Blueprint
 from Assignment.functionality import Assignment
-
+from logger import log_route_io
 teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignment/')
 
 """
@@ -10,6 +10,7 @@ teacher_assignment_bp = Blueprint('assignment', __name__, url_prefix='/assignmen
     - Response: Returns a the assignment id if addition is successful, or an error message if addition fails.
 """
 @teacher_assignment_bp.route('/post', methods=['POST'])
+@log_route_io
 def post():
     return Assignment.post()
 
@@ -21,6 +22,7 @@ def post():
 """
 
 @teacher_assignment_bp.route('/get', methods = ['POST'])
+@log_route_io
 def get():
     return Assignment.get()
 
@@ -32,5 +34,6 @@ def get():
     - For testing only!
 """
 @teacher_assignment_bp.route('/delete', methods=['DELETE'])
+@log_route_io
 def delete():
     return Assignment.delete()

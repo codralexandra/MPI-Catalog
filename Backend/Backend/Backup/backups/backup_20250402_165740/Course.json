@@ -1,0 +1,34 @@
+[
+    {
+        "_id": "67eb7e6819e4efb7ace61263",
+        "course_name": "Math",
+        "teacher_id": "67dfe187cae9f2bf02424746",
+        "students": [
+            "67e53c5960f8a5d53171ec46",
+            "67e53c3f60f8a5d53171ec45",
+            "67e53bd260f8a5d53171ec44"
+        ],
+        "assignments": [
+            "67eb7f498071b55f16532787",
+            "67eb7f528071b55f16532788",
+            "67eb7f578071b55f16532789",
+            "67eb81c7d6d9c8dd78f58726",
+            "67eb8342ea639a62a7754f1d"
+        ]
+    },
+    {
+        "_id": "67eb7e7019e4efb7ace61264",
+        "course_name": "Science",
+        "teacher_id": "67dfe187cae9f2bf02424746",
+        "students": [
+            "67e53bd260f8a5d53171ec44",
+            "67e53c3f60f8a5d53171ec45"
+        ],
+        "assignments": [
+            "67eb8be46420b74dbb3ac95c",
+            "67eb8e9469bfac7be63f240a",
+            "67eb8f0e69bfac7be63f240c",
+            "67ebfbc7a97c28fd3846c0c6"
+        ]
+    }
+]

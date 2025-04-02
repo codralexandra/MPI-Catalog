@@ -1,6 +1,6 @@
 from flask import Blueprint
 from Student.functionality import Student
-
+from logger import log_route_io
 student_info_bp = Blueprint('student_info_bp', __name__, url_prefix='/student')
 
 """
@@ -10,6 +10,7 @@ student_info_bp = Blueprint('student_info_bp', __name__, url_prefix='/student')
     - Response: Returns a the student id if addition is successful, or an error message if addition fails.
 """
 @student_info_bp.route('/post', methods=['POST'])
+@log_route_io
 def post():
     return Student.post()
 
@@ -24,6 +25,7 @@ def get_bulk_info():
     return Student.get_bulk_info()
 
 @student_info_bp.route('/delete', methods=['DELETE'])
+@log_route_io
 def delete():
     return Student.delete()
 
@@ -34,5 +36,6 @@ def delete():
     - Response: Returns a student's id if successful, or an error message if it fails.
 """
 @student_info_bp.route('/get-id', methods=['POST'])
+@log_route_io
 def get_id():
     return Student.get_id()

@@ -1,0 +1,170 @@
+[
+    {
+        "_id": "67eb80bbf39ed9e0a4102503",
+        "student_id": "67e53c5960f8a5d53171ec46",
+        "assignment_id": "67eb7f498071b55f16532787",
+        "score": 3,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80bbf39ed9e0a4102504",
+        "student_id": "67e53c5960f8a5d53171ec46",
+        "assignment_id": "67eb7f528071b55f16532788",
+        "score": 3,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80bbf39ed9e0a4102505",
+        "student_id": "67e53c5960f8a5d53171ec46",
+        "assignment_id": "67eb7f578071b55f16532789",
+        "score": 3,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80c7f39ed9e0a4102506",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb7f498071b55f16532787",
+        "score": 10,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80c7f39ed9e0a4102507",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb7f528071b55f16532788",
+        "score": 1,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80c7f39ed9e0a4102508",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb7f578071b55f16532789",
+        "score": 10,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80d3f39ed9e0a4102509",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb7f498071b55f16532787",
+        "score": 7,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80d3f39ed9e0a410250a",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb7f528071b55f16532788",
+        "score": 7,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb80d3f39ed9e0a410250b",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb7f578071b55f16532789",
+        "score": 4,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb81cad6d9c8dd78f58727",
+        "student_id": "67e53c5960f8a5d53171ec46",
+        "assignment_id": "67eb81c7d6d9c8dd78f58726",
+        "score": 8,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb81cad6d9c8dd78f58728",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb81c7d6d9c8dd78f58726",
+        "score": 6,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb81cad6d9c8dd78f58729",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb81c7d6d9c8dd78f58726",
+        "score": 8,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8342ea639a62a7754f1e",
+        "student_id": "67e53c5960f8a5d53171ec46",
+        "assignment_id": "67eb8342ea639a62a7754f1d",
+        "score": 0,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8342ea639a62a7754f1f",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb8342ea639a62a7754f1d",
+        "score": 10,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8be46420b74dbb3ac95d",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb8be46420b74dbb3ac95c",
+        "score": 5,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8e9569bfac7be63f240b",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb8e9469bfac7be63f240a",
+        "score": 7,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8f0e69bfac7be63f240d",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb8f0e69bfac7be63f240c",
+        "score": 0,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8f9f69bfac7be63f240e",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb8be46420b74dbb3ac95c",
+        "score": 4,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8f9f69bfac7be63f240f",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb8e9469bfac7be63f240a",
+        "score": 0,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb8f9f69bfac7be63f2410",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67eb8f0e69bfac7be63f240c",
+        "score": 8,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67eb944b33bad357a84368b8",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb944b33bad357a84368b7",
+        "score": 0,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67ebfbc7a97c28fd3846c0c7",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67ebfbc7a97c28fd3846c0c6",
+        "score": 3,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67ebfbc7a97c28fd3846c0c8",
+        "student_id": "67e53c3f60f8a5d53171ec45",
+        "assignment_id": "67ebfbc7a97c28fd3846c0c6",
+        "score": 3,
+        "date": "01.04.2025"
+    },
+    {
+        "_id": "67ec506f98dd079cc7f3d107",
+        "student_id": "67e53bd260f8a5d53171ec44",
+        "assignment_id": "67eb8342ea639a62a7754f1d",
+        "score": 10,
+        "date": "01.04.2025"
+    }
+]
