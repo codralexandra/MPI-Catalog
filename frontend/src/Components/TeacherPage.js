@@ -404,6 +404,22 @@ function TeacherPage() {
                   <button className="grade-add-button" onClick={handleGradeDialogOpen}>MANAGE GRADES for {selectedCourse.name} </button>
               </div>
             )}
+            <div style={{ marginTop: '20px' }}>
+                <button
+            className="add-button"
+            onClick={async () => {
+              try {
+                await axiosClient.post('/backup');
+                alert('Backup successful!');
+              } catch (error) {
+                console.error('Error during backup:', error);
+                alert('Backup failed. Please try again.');
+              }
+            }}
+                >
+            Backup Data
+                </button>
+              </div>
 
         </div>
         
